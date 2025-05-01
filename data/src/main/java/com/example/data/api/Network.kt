@@ -1,5 +1,6 @@
 package com.example.data.api
 
+import com.example.data.api.interceptor.RequestHeaderInterceptor
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -15,12 +16,14 @@ fun createApiService(baseUrl: String): ApiInterface {
         readTimeout(TIME_OUT.toLong(), TimeUnit.SECONDS)
         writeTimeout(TIME_OUT.toLong(), TimeUnit.SECONDS)
         connectTimeout(TIME_OUT.toLong(), TimeUnit.SECONDS)
+        addNetworkInterceptor(RequestHeaderInterceptor())
     }.build()
 
+    val json =  Json { ignoreUnknownKeys = true }
     return Retrofit.Builder()
         .baseUrl(baseUrl)
         .client(okHttpClient)
-        .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
         .build()
         .create(ApiInterface::class.java)
 }

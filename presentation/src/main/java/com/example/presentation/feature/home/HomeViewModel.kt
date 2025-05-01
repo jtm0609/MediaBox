@@ -1,21 +1,24 @@
 package com.example.presentation.feature.home
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.example.domain.usecase.GetSearchResultUseCase
+import androidx.paging.map
+import com.example.domain.usecase.GetSearchResultsUseCase
 import com.example.presentation.base.BaseViewModel
+import com.example.presentation.model.toPresentation
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @OptIn(FlowPreview::class)
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val searchResultUseCase: GetSearchResultUseCase
+    private val searchResultsUseCase: GetSearchResultsUseCase
 ) : BaseViewModel<HomeContract.Event, HomeContract.State, HomeContract.Effect>() {
 
     override fun createInitialState(): HomeContract.State = HomeContract.State.initial()
@@ -23,8 +26,12 @@ class HomeViewModel @Inject constructor(
     override fun handleEvent(event: HomeContract.Event) {
         when (event) {
             is HomeContract.Event.OnSearchQueryChanged -> {
-                setState { copy(searchQuery = MutableStateFlow(event.query)) }
+                viewModelScope.launch { uiState.value.searchQuery.emit(value = event.query) }
             }
+
+            is HomeContract.Event.OnSearchLoading -> setState { this.copy(isLoading = true) }
+            is HomeContract.Event.OnSearchFinish -> setState { this.copy(isLoading = false) }
+
         }
     }
 
@@ -39,6 +46,7 @@ class HomeViewModel @Inject constructor(
                 .filter { it.isNotEmpty() && it.length >= 2 }
                 .distinctUntilChanged()
                 .collect { query ->
+                    Log.d("taek", "query: $query")
                     getSearchResult(query = query)
                 }
         }
@@ -47,15 +55,22 @@ class HomeViewModel @Inject constructor(
 
     private fun getSearchResult(query: String) {
         viewModelScope.launch {
-            setState { copy(isLoading = true) }
-
-            searchResultUseCase(query)
-                .onSuccess {
-                    setState { copy(isLoading = false, searchResult = it) }
+            try {
+                val result = searchResultsUseCase(query)
+                    .map { pagingData ->
+                        pagingData.map { searchItem ->
+                            searchItem.toPresentation()
+                        }
+                    }
+                setState {
+                    copy(isLoading = false, searchResult = result)
                 }
-                .onFailure {
-                    setState { copy(isLoading = false, error = it) }
+            } catch (e: Exception) {
+                Log.e("HomeViewModel", "Search error", e)
+                setState {
+                    copy(isLoading = false, error = e)
                 }
+            }
         }
     }
 }

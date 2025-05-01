@@ -10,6 +10,7 @@ interface ApiInterface {
     @GET("image")
     suspend fun getImages(
         @Query("query") query: String,
+        @Query("sort") sort: String,
         @Query("page") page: Int,
         @Query("size") size: Int
     ): ImagesResponse
@@ -17,6 +18,7 @@ interface ApiInterface {
     @GET("vclip")
     suspend fun getVideos(
         @Query("query") query: String,
+        @Query("sort") sort: String,
         @Query("page") page: Int,
         @Query("size") size: Int
     ): VideosResponse

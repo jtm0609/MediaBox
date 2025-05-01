@@ -10,6 +10,6 @@ class GetSearchResultUseCase @Inject constructor(
     private val searchRepository: SearchRepository,
 ) {
 
-    suspend operator fun invoke(query: String): Result<Flow<PagingData<SearchItem>>> =
+    suspend operator fun invoke(query: String): Flow<PagingData<SearchItem>> =
         searchRepository.getSearchResults(query)
 }

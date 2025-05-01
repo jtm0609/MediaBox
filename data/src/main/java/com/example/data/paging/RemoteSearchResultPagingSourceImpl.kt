@@ -1,7 +1,9 @@
 package com.example.data.paging
 
+import android.util.Log
 import androidx.paging.PagingState
 import com.example.data.Constants.NETWORK_PAGE_SIZE
+import com.example.data.Constants.RECENCY
 import com.example.data.Constants.STARTING_PAGE_INDEX
 import com.example.data.api.ApiInterface
 import com.example.domain.model.SearchItem
@@ -19,8 +21,8 @@ class RemoteSearchResultPagingSourceImpl @Inject constructor(
         return try {
             coroutineScope {
                 // 두 API 호출을 병렬로 실행
-                val imageDeferred = async { apiInterface.getImages(keyWord, position, params.loadSize) }
-                val videoDeferred = async { apiInterface.getVideos(keyWord, position, params.loadSize) }
+                val imageDeferred = async { apiInterface.getImages(keyWord, RECENCY, position, params.loadSize) }
+                val videoDeferred = async { apiInterface.getVideos(keyWord, RECENCY, position, params.loadSize) }
 
                 val imageResponse = imageDeferred.await()
                 val videoResponse = videoDeferred.await()
@@ -35,12 +37,13 @@ class RemoteSearchResultPagingSourceImpl @Inject constructor(
                 }
 
                 LoadResult.Page(
-                    data = (image + video).sortedByDescending { it.dateTime },
+                    data = image + video,
                     prevKey = if (position == STARTING_PAGE_INDEX) null else position - 1,
                     nextKey = nextKey
                 )
             }
         } catch (e: Exception) {
+            Log.d("taek","RemoteSearchResultPagingSourceImpl load fail: ${e}")
             LoadResult.Error(e)
         }
     }

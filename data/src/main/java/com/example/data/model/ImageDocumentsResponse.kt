@@ -21,5 +21,5 @@ data class ImageDocumentsResponse(
     @SerialName("doc_url")
     val docUrl: String,
     @SerialName("datetime")
-    val datetime: Instant
+    val dateTime: Instant
 )

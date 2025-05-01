@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 interface SearchRepository {
     suspend fun getSearchResults(
         query: String
-    ): Result<Flow<PagingData<SearchItem>>>
+    ): Flow<PagingData<SearchItem>>
 }
