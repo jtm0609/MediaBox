@@ -2,7 +2,6 @@ package com.example.data.model
 
 import com.example.data.DataMapper
 import com.example.domain.model.SearchItem
-import com.example.domain.model.SearchItemType
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toLocalDateTime
@@ -20,8 +19,7 @@ data class VideosResponse(
         documents.map {
             SearchItem(
                 url = it.thumbnail,
-                dateTime = it.dateTime.toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime(),
-                type = SearchItemType.VIDEO
+                dateTime = it.dateTime.toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
             )
         }
 }

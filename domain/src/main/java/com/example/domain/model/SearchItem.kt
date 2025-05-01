@@ -4,10 +4,5 @@ import java.time.LocalDateTime
 
 data class SearchItem(
     val url: String,
-    val dateTime: LocalDateTime,
-    val type: SearchItemType
+    val dateTime: LocalDateTime
 )
-
-enum class SearchItemType {
-    IMAGE, VIDEO
-}

@@ -1,5 +1,6 @@
 package com.example.data.api
 
+import com.example.data.api.interceptor.LoggingInterceptor
 import com.example.data.api.interceptor.RequestHeaderInterceptor
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -17,6 +18,7 @@ fun createApiService(baseUrl: String): ApiInterface {
         writeTimeout(TIME_OUT.toLong(), TimeUnit.SECONDS)
         connectTimeout(TIME_OUT.toLong(), TimeUnit.SECONDS)
         addNetworkInterceptor(RequestHeaderInterceptor())
+        addInterceptor(LoggingInterceptor())
     }.build()
 
     val json =  Json { ignoreUnknownKeys = true }
