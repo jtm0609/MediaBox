@@ -39,15 +39,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemContentType
-import androidx.paging.compose.itemKey
 import com.example.presentation.model.SearchItemModel
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filter
 
-@OptIn(FlowPreview::class)
 @Composable
 fun HomeScreen(
     padding: PaddingValues,
@@ -55,28 +48,15 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val query by state.searchQuery.collectAsStateWithLifecycle()
-    val searchList = state.searchResult.collectAsLazyPagingItems()
+    val searchList = viewModel.searchResult.collectAsLazyPagingItems()
     val gridState = rememberLazyGridState()
 
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    LaunchedEffect(state.searchQuery) {
-        state.searchQuery
-            .debounce(timeoutMillis = 700L)
-            .filter { it.isNotEmpty() && it.length >= 2 }
-            .distinctUntilChanged()
-            .collect { query ->
-                Log.d("taek", "query: $query")
-                viewModel.setEvent(HomeContract.Event.OnSearch(query))
-            }
-    }
 
     state.error?.let {
         onShowErrorSnackBar(it)
         keyboardController?.hide()
     }
-
 
     Box(
         modifier = Modifier
@@ -90,7 +70,7 @@ fun HomeScreen(
         ) {
             // 검색바
             OutlinedTextField(
-                value = query,
+                value = state.searchQuery,
                 onValueChange = {
                     viewModel.setEvent(HomeContract.Event.OnSearchKeywordChanged(it))
                 },
@@ -102,7 +82,7 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             // 그리드 리스트
-            if (query.count() > 1) {
+            if (state.searchQuery.count() > 1) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(8.dp),

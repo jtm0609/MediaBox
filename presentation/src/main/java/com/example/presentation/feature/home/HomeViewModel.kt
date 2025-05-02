@@ -2,7 +2,6 @@ package com.example.presentation.feature.home
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
@@ -11,13 +10,15 @@ import com.example.domain.usecase.RemoveBookmarkUseCase
 import com.example.domain.usecase.SaveBookmarkUseCase
 import com.example.presentation.base.BaseViewModel
 import com.example.presentation.model.SearchItemModel
-import com.example.presentation.model.toPresentation
+import com.example.presentation.model.toSearchItemModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.withIndex
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -29,12 +30,37 @@ class HomeViewModel @Inject constructor(
     private val removeBookmarkUseCase: RemoveBookmarkUseCase
 ) : BaseViewModel<HomeContract.Event, HomeContract.State, HomeContract.Effect>() {
 
+    //PagingData의 특성상 MVI State에 직접 포함시키기 어려워 별도 Flow로 관리
+    val searchResult: MutableStateFlow<PagingData<SearchItemModel>> = MutableStateFlow(PagingData.empty())
+
+    private val _searchQueryFlow = MutableSharedFlow<String>()
+
+    init {
+        setupSearchQueryFlow()
+    }
+
+    @OptIn(FlowPreview::class)
+    private fun setupSearchQueryFlow() {
+        viewModelScope.launch {
+            _searchQueryFlow
+                .debounce(300) // 300ms 동안 새 이벤트가 없으면 다음 단계로 진행
+                .filter { it.length >= 2 } // 2글자 이상일 때만 검색 실행
+                .distinctUntilChanged() // 이전과 동일한 쿼리는 무시
+                .collect { query ->
+                    getSearchResult(query)
+                }
+        }
+    }
+
     override fun createInitialState(): HomeContract.State = HomeContract.State.initial()
 
     override fun handleEvent(event: HomeContract.Event) {
         when (event) {
             is HomeContract.Event.OnSearchKeywordChanged -> {
-                viewModelScope.launch { uiState.value.searchQuery.emit(value = event.query) }
+                viewModelScope.launch {
+                    setState { this.copy(searchQuery = event.query) }
+                    _searchQueryFlow.emit(event.query)
+                }
             }
 
             is HomeContract.Event.OnSearch -> {
@@ -47,17 +73,17 @@ class HomeViewModel @Inject constructor(
                     try {
                         // 북마크 상태 토글
                         val newBookmarkState = !item.bookMark
-                        
+
                         // 북마크 상태에 따라 저장 또는 삭제
                         if (item.bookMark) {
                             removeBookmarkUseCase(item.toDomain())
                         } else {
                             saveBookmarkUseCase(item.toDomain())
                         }
-                        
+
                         // 현재 PagingData의 해당 아이템만 업데이트
                         updateBookmarkState(item, newBookmarkState)
-                        
+
                         Log.d("taek", "북마크 상태 변경: ${item.url}, 새 상태: $newBookmarkState")
                     } catch (e: Exception) {
                         Log.e("taek", "북마크 업데이트 실패: ${e.message}", e)
@@ -72,8 +98,8 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 // 현재 PagingData 가져오기
-                val currentPagingData = uiState.value.searchResult.value
-                
+                val currentPagingData = searchResult.value
+
                 // 새로운 PagingData 생성
                 val updatedPagingData = currentPagingData.map { searchItem ->
                     if (searchItem.url == item.url) {
@@ -83,10 +109,10 @@ class HomeViewModel @Inject constructor(
                         searchItem
                     }
                 }
-                
+
                 // 새 PagingData로 UI 갱신
-                uiState.value.searchResult.emit(updatedPagingData)
-                
+                searchResult.emit(updatedPagingData)
+
                 Log.d("taek", "북마크 상태 업데이트 완료: ${item.url}")
             } catch (e: Exception) {
                 Log.e("taek", "북마크 업데이트 중 오류: ${e.message}", e)
@@ -99,7 +125,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 setState { copy(isLoading = true) }
-                
+
                 // Flow를 한 번만 수집하고 cachedIn으로 공유 가능하게 함
                 searchResultsUseCase(query)
                     .withIndex()
@@ -108,21 +134,22 @@ class HomeViewModel @Inject constructor(
                         launch {
                             try {
                                 val cachedFlow = resultFlow.cachedIn(viewModelScope)
-                                
+
                                 when (idx) {
                                     0 -> {
                                         Log.d("taek", "collect 초기 결과")
                                         setState { copy(isLoading = false) }
                                     }
+
                                     1 -> {
                                         Log.d("taek", "collect 전체 결과")
                                     }
                                 }
-                                
+
                                 // Flow 수집하여 UI 업데이트
                                 cachedFlow.collectLatest { pagingData ->
-                                    val mappedResults = pagingData.map { it.toPresentation() }
-                                    uiState.value.searchResult.emit(mappedResults)
+                                    val mappedResults = pagingData.map { it.toSearchItemModel() }
+                                    searchResult.emit(mappedResults)
                                 }
                             } catch (e: Exception) {
                                 Log.e("taek", "결과 처리 오류(idx=$idx): ${e.message}", e)

@@ -1,18 +1,23 @@
 package com.example.presentation.feature.bookmark
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.example.presentation.navigation.NavRoute
 
-fun NavController.navigateBookmark() {
-    this.navigate(NavRoute.BookMark)
+fun NavController.navigateBookmark(navOptions: NavOptions) {
+    this.navigate(NavRoute.BookMark, navOptions)
 }
 
-fun NavGraphBuilder.bookmarkNavGraph(onShowErrorSnackBar: (throwable: Throwable?) -> Unit) {
-
+fun NavGraphBuilder.bookmarkNavGraph(
+    padding: PaddingValues,
+    onShowErrorSnackBar: (throwable: Throwable?) -> Unit
+) {
     composable<NavRoute.BookMark> { navBackStackEntry ->
-        BookmarkScreen (
+        BookmarkScreen(
+            padding = padding,
             onShowErrorSnackBar = onShowErrorSnackBar
         )
     }

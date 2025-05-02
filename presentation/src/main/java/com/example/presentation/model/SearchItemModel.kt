@@ -2,7 +2,6 @@ package com.example.presentation.model
 
 import com.example.domain.model.SearchItem
 import com.example.presentation.PresentationMapper
-import kotlinx.datetime.toJavaLocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.LocalDateTime
 
@@ -26,7 +25,7 @@ data class SearchItemModel(
 }
 
 
-fun SearchItem.toPresentation() : SearchItemModel {
+fun SearchItem.toSearchItemModel() : SearchItemModel {
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd")
     val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
     return SearchItemModel(

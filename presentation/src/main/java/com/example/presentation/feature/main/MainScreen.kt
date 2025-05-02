@@ -1,14 +1,19 @@
 package com.example.presentation.feature.main
 
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import com.example.presentation.R
 import com.example.presentation.navigation.Navigator
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 import java.net.UnknownHostException
 
@@ -50,6 +55,17 @@ private fun MainScreenContent(
                 padding = paddingValue,
                 navigator = navigator,
                 onShowErrorSnackBar = onShowErrorSnackBar
+            )
+        },
+        bottomBar = {
+            MainBottomBar(
+                modifier = Modifier
+                    .navigationBarsPadding()
+                    .padding(start = 8.dp, end = 8.dp, bottom = 28.dp),
+                visible = navigator.shouldShowBottomBar(),
+                tabs = MainTab.entries.toPersistentList(),
+                currentTab = navigator.currentTab,
+                onTabSelected = { navigator.navigate(it) }
             )
         },
         snackbarHost = { SnackbarHost(snackBarHostState) }

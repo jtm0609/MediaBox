@@ -1,28 +1,24 @@
-package com.example.presentation.feature.home
+package com.example.presentation.feature.bookmark
 
 import com.example.presentation.base.UiEffect
 import com.example.presentation.base.UiEvent
 import com.example.presentation.base.UiState
-import com.example.presentation.model.SearchItemModel
+import com.example.presentation.model.BookmarkItemModel
 
-class HomeContract {
+class BookmarkContract {
 
-    sealed class Event : UiEvent {
-        data class OnSearchKeywordChanged(val query: String) : Event()
-        data class OnSearch(val query: String) : Event()
-        data class OnClickBookmark(val searchItemModel: SearchItemModel) : Event()
-    }
+    sealed class Event : UiEvent
 
     data class State(
         val isLoading: Boolean,
-        val searchQuery: String,
+        val bookmarkList: List<BookmarkItemModel>,
         val error: Throwable?
     ) : UiState {
         companion object {
             fun initial(): State {
                 return State(
                     isLoading = false,
-                    searchQuery = "",
+                    bookmarkList = emptyList(),
                     error = null
                 )
             }

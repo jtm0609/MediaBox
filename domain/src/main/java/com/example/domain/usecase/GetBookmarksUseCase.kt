@@ -8,7 +8,7 @@ class GetBookmarksUseCase @Inject constructor(
     private val bookmarkRepository: BookmarkRepository,
 ) {
 
-    suspend operator fun invoke(searchItem: SearchItem): Result<List<SearchItem>> =
+    suspend operator fun invoke(): Result<List<SearchItem>> =
         bookmarkRepository.getBookmarks()
 }
 

@@ -33,6 +33,7 @@ fun MainNaviHost(
                 onShowErrorSnackBar = onShowErrorSnackBar,
             )
             bookmarkNavGraph(
+                padding = padding,
                 onShowErrorSnackBar = onShowErrorSnackBar
             )
         }
