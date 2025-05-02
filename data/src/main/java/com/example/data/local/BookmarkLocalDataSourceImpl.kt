@@ -1,32 +1,34 @@
 package com.example.data.local
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 class BookmarkLocalDataSourceImpl @Inject constructor(
-    private val sharedPreferenceManager: SharedPreferenceManager
+    private val dataStoreManager: DataStoreManager
 ) : BookmarkLocalDataSource {
 
-    override fun saveBookmarkItem(item: SearchLocal) {
-        val list = getBookmarks().toMutableList()
+    override suspend fun saveBookmarkItem(item: SearchLocal) {
+        val list = getBookmarks().first().toMutableList()
         list.add(item)
-        sharedPreferenceManager.saveObjectList(BOOKMARK_KEY, list)
+        dataStoreManager.saveObjectList<SearchLocal>(BOOKMARK_KEY, list).invoke()
     }
 
-    override fun removeBookmarkItem(item: SearchLocal): Boolean {
-        val list = getBookmarks().toMutableList()
+    override suspend fun removeBookmarkItem(item: SearchLocal): Boolean {
+        val list = getBookmarks().first().toMutableList()
         val index = list.indexOfFirst { it.url == item.url }
         if (index == -1) return false
-        
+
         list.removeAt(index)
-        sharedPreferenceManager.saveObjectList(BOOKMARK_KEY, list)
+        dataStoreManager.saveObjectList<SearchLocal>(BOOKMARK_KEY, list).invoke()
         return true
     }
 
-    override fun getBookmarks(): List<SearchLocal> =
-        sharedPreferenceManager.getObjectList(BOOKMARK_KEY)
+    override fun getBookmarks(): Flow<List<SearchLocal>> =
+        dataStoreManager.getObjectListFlow<SearchLocal>(BOOKMARK_KEY)
 
-    override fun isBookmarked(url: String): Boolean =
-        getBookmarks().any { it.url == url }
+    override suspend fun isBookmarked(url: String): Boolean =
+        getBookmarks().first().any { it.url == url }
 
     companion object {
         const val BOOKMARK_KEY = "BOOKMARK_KEY"

@@ -1,10 +1,13 @@
 package com.example.presentation.feature.bookmark
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.domain.usecase.GetBookmarksUseCase
 import com.example.presentation.base.BaseViewModel
 import com.example.presentation.model.toBookmarkItemModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,17 +25,19 @@ class BookmarkViewModel @Inject constructor(
     override fun handleEvent(event: BookmarkContract.Event) {}
 
     private fun getBookmarkList() {
-        setState { this.copy(isLoading = true) }
+
         viewModelScope.launch {
-            getBookmarksUseCase().onSuccess { bookmarkList ->
-                setState {
-                    this.copy(
-                        isLoading = false,
-                        bookmarkList = bookmarkList.map { it.toBookmarkItemModel() })
+            getBookmarksUseCase()
+                .onStart { setState { this.copy(isLoading = true) } }
+                .catch { setState { this.copy(isLoading = false, error = it) } }
+                .collect { bookmarkList ->
+                    Log.d("taek", "Adasdas")
+                    setState {
+                        this.copy(
+                            isLoading = false,
+                            bookmarkList = bookmarkList.map { it.toBookmarkItemModel() })
+                    }
                 }
-            }.onFailure {
-                setState { this.copy(isLoading = false, error = it) }
-            }
         }
     }
 }

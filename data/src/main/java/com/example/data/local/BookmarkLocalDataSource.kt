@@ -1,9 +1,11 @@
 package com.example.data.local
 
+import kotlinx.coroutines.flow.Flow
+
 interface BookmarkLocalDataSource {
 
-    fun saveBookmarkItem(item: SearchLocal)
-    fun removeBookmarkItem(item: SearchLocal): Boolean
-    fun getBookmarks(): List<SearchLocal>
-    fun isBookmarked(url:String): Boolean
+    suspend fun saveBookmarkItem(item: SearchLocal)
+    suspend fun removeBookmarkItem(item: SearchLocal): Boolean
+    fun getBookmarks(): Flow<List<SearchLocal>>
+    suspend fun isBookmarked(url: String): Boolean
 }
