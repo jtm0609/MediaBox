@@ -11,6 +11,7 @@ import com.example.data.Constants.VIDEO_API_PAGE_MAX
 import com.example.data.datasource.SearchRemoteDataSource
 import com.example.data.local.BookmarkLocalDataSource
 import com.example.data.model.PagingResponse
+import com.example.data.model.SearchCache
 import com.example.data.paging.RemoteSearchResultPagingSource
 import com.example.domain.model.SearchItem
 import com.example.domain.repository.SearchRepository
@@ -26,7 +27,45 @@ class SearchRepositoryImpl @Inject constructor(
     private val bookmarkLocalDataSource: BookmarkLocalDataSource
 ) : SearchRepository {
 
+    companion object {
+        private const val TAG = "taek"
+        private const val CACHE_EXPIRATION_TIME = 5 * 60 * 1000L // 5분을 밀리초로 변환
+        private const val MAX_CACHE_SIZE = 20 // 최대 캐시 항목 수
+    }
+
+    // 검색 결과 캐시
+    private val searchCache = mutableMapOf<String, SearchCache>()
+
+    private fun <T> limitCacheSize(cache: MutableMap<String, T>) {
+        if (cache.size > MAX_CACHE_SIZE) {
+            // 가장 오래된 항목부터 제거 (단순화를 위해 첫 번째 항목 제거)
+            val firstKey = cache.keys.firstOrNull()
+            if (firstKey != null) {
+                cache.remove(firstKey)
+                Log.d(TAG, "캐시 크기 제한으로 항목 제거: $firstKey")
+            }
+        }
+    }
+
     override suspend fun getInitSearchResults(query: String): Flow<PagingData<SearchItem>> {
+        // 캐시에 해당 쿼리가 있고 만료되지 않았다면 빈 값을 방출 (스키핑)
+        searchCache[query]?.let { cache ->
+            if (!cache.isExpired(CACHE_EXPIRATION_TIME)) {
+                Log.d(TAG, "초기 검색 스킵 (캐시 존재): 쿼리=$query")
+                // 빈 리스트로 PagingData 생성
+                val emptyResponse = PagingResponse(searchResults = emptyList())
+                return Pager(
+                    config = PagingConfig(
+                        enablePlaceholders = false,
+                        initialLoadSize = PAGE_SIZE,
+                        pageSize = PAGE_SIZE
+                    ),
+                    pagingSourceFactory = { RemoteSearchResultPagingSource(emptyResponse) }
+                ).flow
+            }
+        }
+
+        Log.d(TAG, "초기 검색 결과 요청: 쿼리=$query")
         val pagingResponse = combine(
             flow {
                 emit(
@@ -37,7 +76,7 @@ class SearchRepositoryImpl @Inject constructor(
                         sort = Constants.RECENCY
                     )
                 )
-            }.catch { Log.e("taek","getInitSearchResults image initial fail:${it}") },
+            }.catch { Log.e(TAG, "getInitSearchResults image initial fail:${it}") },
             flow {
                 emit(
                     searchRemoteDataSource.getVideoSearchResult(
@@ -47,7 +86,7 @@ class SearchRepositoryImpl @Inject constructor(
                         sort = Constants.RECENCY
                     )
                 )
-            }.catch { Log.e("taek","getInitSearchResults video initial fail:${it}") }
+            }.catch { Log.e(TAG, "getInitSearchResults video initial fail:${it}") }
         ) { imageResponse, videoResponse ->
             val image = imageResponse.toDomain()
             val video = videoResponse.toDomain()
@@ -67,7 +106,23 @@ class SearchRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getTotalSearchResults(query: String): Flow<PagingData<SearchItem>> {
+        // 캐시에 해당 쿼리가 있고 만료되지 않았다면 캐시된 결과 반환
+        searchCache[query]?.let { cache ->
+            if (!cache.isExpired(CACHE_EXPIRATION_TIME)) {
+                Log.d(TAG, "검색 결과 캐시 사용: 쿼리=$query")
+                val cachedResponse = PagingResponse(searchResults = cache.searchItems)
+                return Pager(
+                    config = PagingConfig(
+                        enablePlaceholders = false,
+                        initialLoadSize = PAGE_SIZE,
+                        pageSize = PAGE_SIZE
+                    ),
+                    pagingSourceFactory = { RemoteSearchResultPagingSource(cachedResponse) }
+                ).flow
+            }
+        }
 
+        Log.d(TAG, "전체 검색 결과 요청: 쿼리=$query")
         val pagingResponse = combine(
             flow {
                 val imageList = mutableListOf<SearchItem>()
@@ -110,6 +165,11 @@ class SearchRepositoryImpl @Inject constructor(
             }) { imageList, videoList ->
             val searchResults = (imageList + videoList).sortedByDescending { it.dateTime }
             searchResults.map { it.bookMark = bookmarkLocalDataSource.isBookmarked(it.url) }
+            
+            // 결과를 캐시에 저장
+            searchCache[query] = SearchCache(searchResults, System.currentTimeMillis())
+            limitCacheSize(searchCache)
+            
             PagingResponse(searchResults = searchResults)
         }.first()
 
