@@ -4,5 +4,6 @@ import java.time.LocalDateTime
 
 data class SearchItem(
     val url: String,
-    val dateTime: LocalDateTime
+    val dateTime: LocalDateTime,
+    var bookMark: Boolean
 )

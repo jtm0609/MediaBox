@@ -19,7 +19,8 @@ data class ImagesResponse(
         documents.map {
             SearchItem(
                 url = it.thumbnailUrl,
-                dateTime = it.dateTime.toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
+                dateTime = it.dateTime.toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime(),
+                bookMark = false
             )
         }
 }

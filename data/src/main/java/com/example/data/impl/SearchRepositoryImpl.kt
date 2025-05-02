@@ -9,6 +9,7 @@ import com.example.data.Constants.IMAGE_API_PAGE_MAX
 import com.example.data.Constants.PAGE_SIZE
 import com.example.data.Constants.VIDEO_API_PAGE_MAX
 import com.example.data.datasource.SearchRemoteDataSource
+import com.example.data.local.BookmarkLocalDataSource
 import com.example.data.model.PagingResponse
 import com.example.data.paging.RemoteSearchResultPagingSource
 import com.example.domain.model.SearchItem
@@ -21,7 +22,8 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class SearchRepositoryImpl @Inject constructor(
-    private val searchRemoteDataSource: SearchRemoteDataSource
+    private val searchRemoteDataSource: SearchRemoteDataSource,
+    private val bookmarkLocalDataSource: BookmarkLocalDataSource
 ) : SearchRepository {
 
     override suspend fun getInitSearchResults(query: String): Flow<PagingData<SearchItem>> {
@@ -49,7 +51,9 @@ class SearchRepositoryImpl @Inject constructor(
         ) { imageResponse, videoResponse ->
             val image = imageResponse.toDomain()
             val video = videoResponse.toDomain()
-            PagingResponse(searchResults = image + video)
+            val searchResults = (image + video).sortedByDescending { it.dateTime }
+            searchResults.map { it.bookMark = bookmarkLocalDataSource.isBookmarked(it.url) }
+            PagingResponse(searchResults = searchResults)
         }.first()
 
         return Pager(
@@ -105,6 +109,7 @@ class SearchRepositoryImpl @Inject constructor(
                 emit(videoList)
             }) { imageList, videoList ->
             val searchResults = (imageList + videoList).sortedByDescending { it.dateTime }
+            searchResults.map { it.bookMark = bookmarkLocalDataSource.isBookmarked(it.url) }
             PagingResponse(searchResults = searchResults)
         }.first()
 

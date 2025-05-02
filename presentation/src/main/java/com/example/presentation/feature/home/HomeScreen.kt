@@ -2,19 +2,26 @@ package com.example.presentation.feature.home
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -32,6 +39,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import com.example.presentation.model.SearchItemModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
@@ -100,14 +109,18 @@ fun HomeScreen(
                     state = gridState
                 ) {
                     items(
-                        count = searchList.itemCount
+                        count = searchList.itemCount,
+                        key = { index -> 
+                            // URL과 날짜, 시간을 조합하여 고유한 키 생성
+                            searchList[index]?.let { "${it.url}_${it.date}_${it.time}" } ?: index
+                        }
                     ) { index ->
-
-                        searchList[index]?.let {
+                        val item = searchList[index]
+                        item?.let {
                             SearchItemCard(
                                 item = it,
                                 onBookmarkClick = {
-
+                                    viewModel.setEvent(HomeContract.Event.OnClickBookmark(it))
                                 }
                             )
                         }
@@ -141,7 +154,6 @@ fun HomeScreen(
 @Composable
 fun SearchItemCard(
     item: SearchItemModel,
-    isBookmarked: Boolean = false,
     onBookmarkClick: () -> Unit
 ) {
     Card(
@@ -161,6 +173,26 @@ fun SearchItemCard(
                     .fillMaxWidth()
                     .height(120.dp),
                 contentScale = ContentScale.Crop
+            )
+
+            Log.d("taek", "item.bookMark: ${item.bookMark}")
+            // 북마크 아이콘 표시
+            Icon(
+                imageVector = Icons.Filled.Star,
+                contentDescription = "북마크",
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+                    .size(24.dp)
+                    .background(
+                        color = Color.Black.copy(alpha = 0.5f),
+                        shape = MaterialTheme.shapes.small
+                    )
+                    .padding(2.dp)
+                    .clickable { 
+                        onBookmarkClick() 
+                    },
+                tint = if (item.bookMark) Color.Yellow else Color.White.copy(alpha = 0.3f)
             )
 
             // 날짜와 시간을 이미지 왼쪽 아래에 세로로 표시

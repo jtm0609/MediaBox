@@ -12,6 +12,7 @@ class HomeContract {
     sealed class Event : UiEvent {
         data class OnSearchKeywordChanged(val query: String) : Event()
         data class OnSearch(val query: String) : Event()
+        data class OnClickBookmark(val searchItemModel: SearchItemModel) : Event()
     }
 
     data class State(
@@ -33,6 +34,6 @@ class HomeContract {
     }
 
     sealed class Effect : UiEffect {
-        data object GoDetailRoute : Effect()
+        data object GoBookmark : Effect()
     }
 }

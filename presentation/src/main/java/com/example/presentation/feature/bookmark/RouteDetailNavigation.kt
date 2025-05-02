@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.presentation.navigation.NavRoute
 
-fun NavController.navigateRouteDetail() {
+fun NavController.navigateBookmark() {
     this.navigate(NavRoute.BookMark)
 }
 

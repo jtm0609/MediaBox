@@ -19,6 +19,6 @@ dependencies {
 
     kapt(libs.hilt.compiler)
     implementation(libs.coroutines.core)
-
+    implementation(libs.kotlinx.serialization.json)
     implementation ("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
 }

@@ -19,7 +19,8 @@ data class VideosResponse(
         documents.map {
             SearchItem(
                 url = it.thumbnail,
-                dateTime = it.dateTime.toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime()
+                dateTime = it.dateTime.toLocalDateTime(TimeZone.currentSystemDefault()).toJavaLocalDateTime(),
+                bookMark = false
             )
         }
 }

@@ -1,7 +1,7 @@
 package com.example.presentation.navigation
 
 import androidx.navigation.NavHostController
-import com.example.presentation.feature.bookmark.navigateRouteDetail
+import com.example.presentation.feature.bookmark.navigateBookmark
 
 class Navigator(
     val navController: NavHostController
@@ -9,7 +9,7 @@ class Navigator(
     val startDestination = NavRoute.Home
 
     fun navigateBookMark() {
-        navController.navigateRouteDetail()
+        navController.navigateBookmark()
     }
 
     fun popBackStack() {
