@@ -8,10 +8,10 @@ import com.example.data.Constants
 import com.example.data.Constants.IMAGE_API_PAGE_MAX
 import com.example.data.Constants.PAGE_SIZE
 import com.example.data.Constants.VIDEO_API_PAGE_MAX
+import com.example.data.datasource.BookmarkLocalDataSource
 import com.example.data.datasource.SearchRemoteDataSource
-import com.example.data.local.BookmarkLocalDataSource
-import com.example.data.model.PagingResponse
-import com.example.data.model.SearchCache
+import com.example.data.model.PagingEntity
+import com.example.data.model.SearchItemCache
 import com.example.data.paging.RemoteSearchResultPagingSource
 import com.example.domain.model.SearchItem
 import com.example.domain.repository.SearchRepository
@@ -34,7 +34,7 @@ class SearchRepositoryImpl @Inject constructor(
     }
 
     // 검색 결과 캐시
-    private val searchCache = mutableMapOf<String, SearchCache>()
+    private val searchCache = mutableMapOf<String, SearchItemCache>()
 
     private fun <T> limitCacheSize(cache: MutableMap<String, T>) {
         if (cache.size > MAX_CACHE_SIZE) {
@@ -53,7 +53,7 @@ class SearchRepositoryImpl @Inject constructor(
             if (!cache.isExpired(CACHE_EXPIRATION_TIME)) {
                 Log.d(TAG, "초기 검색 스킵 (캐시 존재): 쿼리=$query")
                 // 빈 리스트로 PagingData 생성
-                val emptyResponse = PagingResponse(searchResults = emptyList())
+                val emptyResponse = PagingEntity(searchResults = emptyList())
                 return Pager(
                     config = PagingConfig(
                         enablePlaceholders = false,
@@ -92,7 +92,7 @@ class SearchRepositoryImpl @Inject constructor(
             val video = videoResponse.toDomain()
             val searchResults = (image + video).sortedByDescending { it.dateTime }
             searchResults.map { it.bookMark = bookmarkLocalDataSource.isBookmarked(it.url) }
-            PagingResponse(searchResults = searchResults)
+            PagingEntity(searchResults = searchResults)
         }.first()
 
         return Pager(
@@ -110,7 +110,7 @@ class SearchRepositoryImpl @Inject constructor(
         searchCache[query]?.let { cache ->
             if (!cache.isExpired(CACHE_EXPIRATION_TIME)) {
                 Log.d(TAG, "검색 결과 캐시 사용: 쿼리=$query")
-                val cachedResponse = PagingResponse(searchResults = cache.searchItems)
+                val cachedResponse = PagingEntity(searchResults = cache.searchItems)
                 return Pager(
                     config = PagingConfig(
                         enablePlaceholders = false,
@@ -138,7 +138,7 @@ class SearchRepositoryImpl @Inject constructor(
                     for (item in imageResponse.toDomain()) {
                         imageList.add(item)
                     }
-                    imageIsEnd = imageResponse.meta.isEnd
+                    imageIsEnd = imageResponse.isEnd
                     imagePage++
                 }
 
@@ -158,7 +158,7 @@ class SearchRepositoryImpl @Inject constructor(
                     for (item in imageResponse.toDomain()) {
                         videoList.add(item)
                     }
-                    videoIsEnd = imageResponse.meta.isEnd
+                    videoIsEnd = imageResponse.isEnd
                     videoPage++
                 }
                 emit(videoList)
@@ -167,10 +167,10 @@ class SearchRepositoryImpl @Inject constructor(
             searchResults.map { it.bookMark = bookmarkLocalDataSource.isBookmarked(it.url) }
             
             // 결과를 캐시에 저장
-            searchCache[query] = SearchCache(searchResults, System.currentTimeMillis())
+            searchCache[query] = SearchItemCache(searchResults, System.currentTimeMillis())
             limitCacheSize(searchCache)
             
-            PagingResponse(searchResults = searchResults)
+            PagingEntity(searchResults = searchResults)
         }.first()
 
         return Pager(

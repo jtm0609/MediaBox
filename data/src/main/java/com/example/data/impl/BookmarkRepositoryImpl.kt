@@ -1,7 +1,7 @@
 package com.example.data.impl
 
-import com.example.data.local.BookmarkLocalDataSource
-import com.example.data.local.toLocal
+import com.example.data.datasource.BookmarkLocalDataSource
+import com.example.data.model.toData
 import com.example.domain.model.SearchItem
 import com.example.domain.repository.BookmarkRepository
 import kotlinx.coroutines.flow.Flow
@@ -18,10 +18,10 @@ class BookmarkRepositoryImpl @Inject constructor(
         }
 
     override suspend fun saveBookmark(searchItem: SearchItem) {
-        bookmarkLocalDataSource.saveBookmarkItem(searchItem.toLocal())
+        bookmarkLocalDataSource.saveBookmarkItem(searchItem.toData())
     }
 
     override suspend fun removeBookmark(searchItem: SearchItem): Result<Boolean> = runCatching {
-        bookmarkLocalDataSource.removeBookmarkItem(searchItem.toLocal())
+        bookmarkLocalDataSource.removeBookmarkItem(searchItem.toData())
     }
 }

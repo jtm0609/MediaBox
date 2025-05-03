@@ -1,16 +1,14 @@
 package com.example.data.datasource
 
-import android.provider.MediaStore.Video
-import com.example.data.model.ImagesResponse
-import com.example.data.model.VideosResponse
+import com.example.data.model.SearchItemsEntity
 
 interface SearchRemoteDataSource {
 
     suspend fun getImageSearchResult(
         query: String, page: Int, size: Int, sort: String
-    ): ImagesResponse
+    ): SearchItemsEntity
 
     suspend fun getVideoSearchResult(
         query: String, page: Int, size: Int, sort: String
-    ): VideosResponse
+    ): SearchItemsEntity
 }

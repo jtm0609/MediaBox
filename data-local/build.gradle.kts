@@ -1,22 +1,20 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    namespace = "com.example.knowmerceassignment"
+    namespace = "com.example.local"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.knowmerceassignment"
         minSdk = 28
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -38,12 +36,27 @@ android {
 }
 
 dependencies {
-    implementation(project(":data-local"))
-    implementation(project(":data-remote"))
+
     implementation(project(":data"))
-    implementation(project(":domain"))
-    implementation(project(":presentation"))
+
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.hilt.android)
+    implementation(libs.hilt.core)
     kapt(libs.hilt.compiler)
+
+    // Datastore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore:1.0.0")
+    implementation("androidx.datastore:datastore-preferences-core:1.0.0")
+
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
+    testImplementation(libs.coroutines.test)
+
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation ("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
 }
