@@ -1,7 +1,7 @@
 package com.example.local.impl
 
 import com.example.data.datasource.BookmarkLocalDataSource
-import com.example.data.model.BookmarkItemEntity
+import com.example.data.model.BookmarkEntity
 import com.example.local.datastroe.DataStoreManager
 import com.example.local.model.BookmarkLocal
 import com.example.local.model.toLocal
@@ -15,7 +15,7 @@ class BookmarkLocalDataSourceImpl @Inject constructor(
     private val dataStoreManager: DataStoreManager
 ) : BookmarkLocalDataSource {
 
-    override suspend fun saveBookmarkItem(item: BookmarkItemEntity) {
+    override suspend fun saveBookmark(item: BookmarkEntity) {
         val currentBookmarks = dataStoreManager.getObjectListFlow<BookmarkLocal>(BOOKMARK_KEY).first()
         val updatedBookmarks = currentBookmarks.toMutableList().apply {
             add(item.toLocal())
@@ -23,7 +23,7 @@ class BookmarkLocalDataSourceImpl @Inject constructor(
         dataStoreManager.putObjectList(BOOKMARK_KEY, updatedBookmarks)
     }
 
-    override suspend fun removeBookmarkItem(item: BookmarkItemEntity): Boolean {
+    override suspend fun removeBookmark(item: BookmarkEntity): Boolean {
         val currentBookmarks = dataStoreManager.getObjectListFlow<BookmarkLocal>(BOOKMARK_KEY).first()
         val index = currentBookmarks.indexOfFirst { it.url == item.url }
         if (index == -1) return false
@@ -34,7 +34,7 @@ class BookmarkLocalDataSourceImpl @Inject constructor(
         return true
     }
 
-    override fun getBookmarks(): Flow<List<BookmarkItemEntity>> =
+    override fun getBookmarks(): Flow<List<BookmarkEntity>> =
         dataStoreManager.getObjectListFlow<BookmarkLocal>(BOOKMARK_KEY).map { it.toData() }
 
     override suspend fun isBookmarked(url: String): Boolean =

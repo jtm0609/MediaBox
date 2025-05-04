@@ -1,6 +1,5 @@
 package com.example.data.impl
 
-import android.util.Log
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
@@ -11,9 +10,9 @@ import com.example.data.Constants.VIDEO_API_PAGE_MAX
 import com.example.data.datasource.BookmarkLocalDataSource
 import com.example.data.datasource.SearchRemoteDataSource
 import com.example.data.model.PagingEntity
-import com.example.data.model.SearchItemCache
-import com.example.data.paging.RemoteSearchResultPagingSource
-import com.example.domain.model.SearchItem
+import com.example.data.model.SearchResultCache
+import com.example.data.paging.SearchResultPagingSource
+import com.example.domain.model.SearchResult
 import com.example.domain.repository.SearchRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -32,10 +31,10 @@ class SearchRepositoryImpl @Inject constructor(
     }
 
     // 검색 결과 캐시
-    private val searchCache = mutableMapOf<String, SearchItemCache>()
+    private val searchCache = mutableMapOf<String, SearchResultCache>()
 
     // 초기 검색 결과를 가져오는 함수 (캐시 있으면 빈 데이터 반환)
-    override suspend fun getInitSearchResults(query: String): Flow<PagingData<SearchItem>> {
+    override suspend fun getInitSearchResults(query: String): Flow<PagingData<SearchResult>> {
         checkCache(query, returnEmptyOnCacheHit = true)?.let {
             return createPager(it)
         }
@@ -51,7 +50,7 @@ class SearchRepositoryImpl @Inject constructor(
     }
 
     // 전체 검색 결과를 가져오는 함수 (캐시 있으면 캐시된 결과 반환)
-    override suspend fun getTotalSearchResults(query: String): Flow<PagingData<SearchItem>> {
+    override suspend fun getTotalSearchResults(query: String): Flow<PagingData<SearchResult>> {
         checkCache(query)?.let {
             return createPager(it)
         }
@@ -69,7 +68,7 @@ class SearchRepositoryImpl @Inject constructor(
     // 이미지 검색 결과를 가져오는 Flow 생성
     private fun getImageSearchFlow(query: String, fetchAll: Boolean = false) = flow {
         if (fetchAll) {
-            val imageList = mutableListOf<SearchItem>()
+            val imageList = mutableListOf<SearchResult>()
             var page = 1
             var isEnd = false
 
@@ -99,7 +98,7 @@ class SearchRepositoryImpl @Inject constructor(
     // 비디오 검색 결과를 가져오는 Flow 생성
     private fun getVideoSearchFlow(query: String, fetchAll: Boolean = false) = flow {
         if (fetchAll) {
-            val videoList = mutableListOf<SearchItem>()
+            val videoList = mutableListOf<SearchResult>()
             var page = 1
             var isEnd = false
 
@@ -128,8 +127,8 @@ class SearchRepositoryImpl @Inject constructor(
 
     // 이미지와 비디오 검색 결과 처리 및 북마크 상태 설정
     private suspend fun processSearchResults(
-        imageData: List<SearchItem>,
-        videoData: List<SearchItem>,
+        imageData: List<SearchResult>,
+        videoData: List<SearchResult>,
         query: String,
         shouldCache: Boolean = false
     ): PagingEntity {
@@ -137,7 +136,7 @@ class SearchRepositoryImpl @Inject constructor(
         searchResults.forEach { it.bookMark = bookmarkLocalDataSource.isBookmarked(it.url) }
 
         if (shouldCache) {
-            searchCache[query] = SearchItemCache(searchResults, System.currentTimeMillis())
+            searchCache[query] = SearchResultCache(searchResults, System.currentTimeMillis())
             limitCacheSize(searchCache)
         }
 
@@ -145,21 +144,21 @@ class SearchRepositoryImpl @Inject constructor(
     }
 
     // PagingEntity로 Pager 생성
-    private fun createPager(pagingEntity: PagingEntity): Flow<PagingData<SearchItem>> =
+    private fun createPager(pagingEntity: PagingEntity): Flow<PagingData<SearchResult>> =
         Pager(
             config = PagingConfig(
                 enablePlaceholders = false,
                 initialLoadSize = PAGE_SIZE,
                 pageSize = PAGE_SIZE
             ),
-            pagingSourceFactory = { RemoteSearchResultPagingSource(pagingEntity) }
+            pagingSourceFactory = { SearchResultPagingSource(pagingEntity) }
         ).flow
 
     // 캐시 확인 및 유효한 결과 반환
     private fun checkCache(query: String, returnEmptyOnCacheHit: Boolean = false): PagingEntity? {
         searchCache[query]?.let { cache ->
             if (!cache.isExpired(CACHE_EXPIRATION_TIME)) {
-                val searchResults = if (returnEmptyOnCacheHit) emptyList() else cache.searchItems
+                val searchResults = if (returnEmptyOnCacheHit) emptyList() else cache.searchResults
                 return PagingEntity(searchResults = searchResults)
             }
         }

@@ -1,17 +1,17 @@
 package com.example.data.model
 
 import com.example.data.DataMapper
-import com.example.domain.model.SearchItem
+import com.example.domain.model.SearchResult
 import kotlinx.datetime.toJavaLocalDateTime
 
-data class SearchItemsEntity(
-    val items: List<DocumentItemEntity>,
+data class SearchResultEntity(
+    val items: List<SearchItemEntity>,
     val isEnd: Boolean
-) : DataMapper<List<SearchItem>> {
+) : DataMapper<List<SearchResult>> {
 
-    override fun toDomain(): List<SearchItem> =
+    override fun toDomain(): List<SearchResult> =
         items.map {
-            SearchItem(
+            SearchResult(
                 url = it.url,
                 dateTime = it.dateTime.toJavaLocalDateTime(),
                 bookMark = false

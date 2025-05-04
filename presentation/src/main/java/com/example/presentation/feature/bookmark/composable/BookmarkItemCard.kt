@@ -11,11 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.presentation.model.BookmarkItemModel
+import com.example.presentation.model.BookmarkModel
 
 @Composable
 fun BookmarkItemCard(
-    item: BookmarkItemModel
+    item: BookmarkModel
 ) {
     Card(
         modifier = Modifier

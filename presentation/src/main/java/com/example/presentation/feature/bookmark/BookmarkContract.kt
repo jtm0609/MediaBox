@@ -3,7 +3,7 @@ package com.example.presentation.feature.bookmark
 import com.example.presentation.common.base.UiEffect
 import com.example.presentation.common.base.UiEvent
 import com.example.presentation.common.base.UiState
-import com.example.presentation.model.BookmarkItemModel
+import com.example.presentation.model.BookmarkModel
 
 class BookmarkContract {
 
@@ -14,7 +14,7 @@ class BookmarkContract {
         data object Loading : State()
         data class Error(val throwable: Throwable) : State()
         data class Success(
-            val bookmarkList: List<BookmarkItemModel>
+            val bookmarkList: List<BookmarkModel>
         ) : State()
     }
 

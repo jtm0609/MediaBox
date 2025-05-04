@@ -1,7 +1,7 @@
 package com.example.data.model
 
-import com.example.domain.model.SearchItem
+import com.example.domain.model.SearchResult
 
 data class PagingEntity(
-    val searchResults: List<SearchItem>
+    val searchResults: List<SearchResult>
 )

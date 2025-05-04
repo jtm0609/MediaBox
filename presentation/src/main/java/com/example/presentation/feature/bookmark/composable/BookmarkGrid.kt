@@ -6,11 +6,11 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
-import com.example.presentation.model.BookmarkItemModel
+import com.example.presentation.model.BookmarkModel
 
 @Composable
 fun BookmarkGrid(
-    bookmarks: List<BookmarkItemModel>
+    bookmarks: List<BookmarkModel>
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),

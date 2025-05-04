@@ -8,11 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.presentation.model.SearchItemModel
+import com.example.presentation.model.SearchResultModel
 
 @Composable
 fun SearchItemCard(
-    item: SearchItemModel,
+    item: SearchResultModel,
     onBookmarkClick: () -> Unit
 ) {
     Card(

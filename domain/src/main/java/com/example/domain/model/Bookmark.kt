@@ -1,5 +1,5 @@
 package com.example.domain.model
 
-data class BookmarkItem(
+data class Bookmark(
     val url: String
 )

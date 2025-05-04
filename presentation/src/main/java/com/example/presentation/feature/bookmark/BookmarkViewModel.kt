@@ -3,7 +3,7 @@ package com.example.presentation.feature.bookmark
 import androidx.lifecycle.viewModelScope
 import com.example.domain.usecase.GetBookmarksUseCase
 import com.example.presentation.common.base.BaseViewModel
-import com.example.presentation.model.toBookmarkItemModel
+import com.example.presentation.model.toBookmarkModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onStart
@@ -30,7 +30,7 @@ class BookmarkViewModel @Inject constructor(
                 .catch { BookmarkContract.State.Error(throwable = it) }
                 .collect { bookmarkList ->
                     setState {
-                        BookmarkContract.State.Success(bookmarkList = bookmarkList.map { it.toBookmarkItemModel()})
+                        BookmarkContract.State.Success(bookmarkList = bookmarkList.map { it.toBookmarkModel()})
                     }
                 }
         }

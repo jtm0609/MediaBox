@@ -1,21 +1,21 @@
 package com.example.local.model
 
-import com.example.data.model.BookmarkItemEntity
+import com.example.data.model.BookmarkEntity
 import com.example.local.LocalMapper
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class BookmarkLocal(
     val url: String
-) : LocalMapper<BookmarkItemEntity> {
+) : LocalMapper<BookmarkEntity> {
 
-    override fun toData(): BookmarkItemEntity =
-        BookmarkItemEntity(
+    override fun toData(): BookmarkEntity =
+        BookmarkEntity(
             url = url
         )
 }
 
-fun BookmarkItemEntity.toLocal(): BookmarkLocal =
+fun BookmarkEntity.toLocal(): BookmarkLocal =
     BookmarkLocal(
         url = url
     )

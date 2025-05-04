@@ -1,9 +1,9 @@
 package com.example.data.model
 
-import com.example.domain.model.SearchItem
+import com.example.domain.model.SearchResult
 
-data class SearchItemCache(
-    val searchItems: List<SearchItem>,
+data class SearchResultCache(
+    val searchResults: List<SearchResult>,
     val timestamp: Long
 ) {
 

@@ -18,11 +18,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.example.presentation.common.base.Progress
+import com.example.presentation.common.composable.Progress
 import com.example.presentation.feature.search.composable.EmptySearchGuide
 import com.example.presentation.feature.search.composable.SearchBar
 import com.example.presentation.feature.search.composable.SearchResultGrid
-import com.example.presentation.model.SearchItemModel
+import com.example.presentation.model.SearchResultModel
 
 @Composable
 fun SearchScreen(
@@ -71,8 +71,8 @@ fun SearchScreen(
 @Composable
 private fun SearchContent(
     state: SearchContract.State,
-    searchPagingItems: LazyPagingItems<SearchItemModel>,
-    onBookmarkClick: (SearchItemModel) -> Unit,
+    searchPagingItems: LazyPagingItems<SearchResultModel>,
+    onBookmarkClick: (SearchResultModel) -> Unit,
     onShowErrorSnackBar: (throwable: Throwable) -> Unit,
     onHideKeyboard: () -> Unit
 ) {

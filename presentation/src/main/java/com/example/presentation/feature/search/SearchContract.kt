@@ -4,20 +4,20 @@ import androidx.paging.PagingData
 import com.example.presentation.common.base.UiEffect
 import com.example.presentation.common.base.UiEvent
 import com.example.presentation.common.base.UiState
-import com.example.presentation.model.SearchItemModel
+import com.example.presentation.model.SearchResultModel
 
 class SearchContract {
 
     sealed class Event : UiEvent {
         data class OnSearchKeywordChanged(val query: String) : Event()
-        data class OnClickBookmark(val searchItemModel: SearchItemModel) : Event()
+        data class OnClickBookmark(val searchResultModel: SearchResultModel) : Event()
     }
 
     sealed class State : UiState {
         data object Idle : State()
         data object Loading : State()
         data class Error(val throwable: Throwable) : State()
-        data class Success(val searchResultPagingList: PagingData<SearchItemModel>) : State()
+        data class Success(val searchResultPagingList: PagingData<SearchResultModel>) : State()
     }
 
     sealed class Effect : UiEffect

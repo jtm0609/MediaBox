@@ -1,21 +1,21 @@
 package com.example.data.model
 
 import com.example.data.DataMapper
-import com.example.domain.model.SearchItem
+import com.example.domain.model.SearchResult
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toJavaLocalDateTime
 
-data class DocumentItemEntity(
+data class SearchItemEntity(
     val url: String,
     val dateTime: LocalDateTime,
-    var bookMark: Boolean
-): DataMapper<SearchItem> {
+    var isBookMark: Boolean
+): DataMapper<SearchResult> {
 
-    override fun toDomain(): SearchItem {
-        return SearchItem(
+    override fun toDomain(): SearchResult {
+        return SearchResult(
             url = url,
             dateTime = dateTime.toJavaLocalDateTime(),
-            bookMark = bookMark
+            bookMark = isBookMark
         )
     }
 }

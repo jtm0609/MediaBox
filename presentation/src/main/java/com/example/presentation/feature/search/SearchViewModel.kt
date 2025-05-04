@@ -4,13 +4,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
-import com.example.domain.model.BookmarkItem
+import com.example.domain.model.Bookmark
 import com.example.domain.usecase.GetSearchResultUseCase
 import com.example.domain.usecase.RemoveBookmarkUseCase
 import com.example.domain.usecase.SaveBookmarkUseCase
 import com.example.presentation.common.base.BaseViewModel
-import com.example.presentation.model.SearchItemModel
-import com.example.presentation.model.toSearchItemModel
+import com.example.presentation.model.SearchResultModel
+import com.example.presentation.model.toSearchResultModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,7 +28,7 @@ class SearchViewModel @Inject constructor(
     private val removeBookmarkUseCase: RemoveBookmarkUseCase
 ) : BaseViewModel<SearchContract.Event, SearchContract.State, SearchContract.Effect>() {
 
-    val searchResultFlow: MutableStateFlow<PagingData<SearchItemModel>> =
+    val searchResultFlow: MutableStateFlow<PagingData<SearchResultModel>> =
         MutableStateFlow(PagingData.empty())
     private val _searchQueryFlow = MutableSharedFlow<String>()
 
@@ -45,7 +45,7 @@ class SearchViewModel @Inject constructor(
             }
 
             is SearchContract.Event.OnClickBookmark -> {
-                toggleBookmark(event.searchItemModel)
+                toggleBookmark(event.searchResultModel)
             }
         }
     }
@@ -69,14 +69,14 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun toggleBookmark(item: SearchItemModel) {
+    private fun toggleBookmark(item: SearchResultModel) {
         viewModelScope.launch {
             try {
                 val newBookmarkState = !item.bookMark
                 if (item.bookMark) {
-                    removeBookmarkUseCase(BookmarkItem(item.url))
+                    removeBookmarkUseCase(Bookmark(item.url))
                 } else {
-                    saveBookmarkUseCase(BookmarkItem(item.url))
+                    saveBookmarkUseCase(Bookmark(item.url))
                 }
                 updateBookmarkState(item, newBookmarkState)
             } catch (e: Exception) {
@@ -85,7 +85,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun updateBookmarkState(item: SearchItemModel, newBookmarkState: Boolean) {
+    private fun updateBookmarkState(item: SearchResultModel, newBookmarkState: Boolean) {
         viewModelScope.launch {
             try {
                 val currentState = uiState.value
@@ -116,7 +116,7 @@ class SearchViewModel @Inject constructor(
                             val cachedFlow = resultFlow.cachedIn(viewModelScope)
 
                             cachedFlow.collectLatest { pagingData ->
-                                val mappedResults = pagingData.map { it.toSearchItemModel() }
+                                val mappedResults = pagingData.map { it.toSearchResultModel() }
                                 setState { SearchContract.State.Success(mappedResults) }
                                 searchResultFlow.emit(mappedResults)
                             }

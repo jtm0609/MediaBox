@@ -1,7 +1,7 @@
 package com.example.remote.model
 
-import com.example.data.model.DocumentItemEntity
-import com.example.data.model.SearchItemsEntity
+import com.example.data.model.SearchItemEntity
+import com.example.data.model.SearchResultEntity
 import com.example.remote.RemoteMapper
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
@@ -14,15 +14,15 @@ data class ImagesResponse(
     val meta: MetaResponse,
     @SerialName("documents")
     val documents: List<ImageDocumentsResponse>
-) : RemoteMapper<SearchItemsEntity> {
-    override fun toData(): SearchItemsEntity =
-        SearchItemsEntity(
+) : RemoteMapper<SearchResultEntity> {
+    override fun toData(): SearchResultEntity =
+        SearchResultEntity(
             isEnd = meta.isEnd,
             items = documents.map {
-                DocumentItemEntity(
+                SearchItemEntity(
                     url = it.thumbnailUrl,
                     dateTime = it.dateTime.toLocalDateTime(TimeZone.currentSystemDefault()),
-                    bookMark = false
+                    isBookMark = false
                 )
             }
         )

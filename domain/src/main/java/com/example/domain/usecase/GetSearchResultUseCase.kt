@@ -1,7 +1,7 @@
 package com.example.domain.usecase
 
 import androidx.paging.PagingData
-import com.example.domain.model.SearchItem
+import com.example.domain.model.SearchResult
 import com.example.domain.repository.SearchRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -11,7 +11,7 @@ class GetSearchResultUseCase @Inject constructor(
     private val searchRepository: SearchRepository,
 ) {
 
-    operator fun invoke(query: String): Flow<Flow<PagingData<SearchItem>>> = flow {
+    operator fun invoke(query: String): Flow<Flow<PagingData<SearchResult>>> = flow {
         emit(searchRepository.getInitSearchResults(query))
         emit(searchRepository.getTotalSearchResults(query))
     }

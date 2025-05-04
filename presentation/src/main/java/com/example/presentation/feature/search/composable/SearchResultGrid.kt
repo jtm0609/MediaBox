@@ -6,12 +6,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
-import com.example.presentation.model.SearchItemModel
+import com.example.presentation.model.SearchResultModel
 
 @Composable
 fun SearchResultGrid(
-    searchItems: LazyPagingItems<SearchItemModel>,
-    onBookmarkClick: (SearchItemModel) -> Unit
+    searchItems: LazyPagingItems<SearchResultModel>,
+    onBookmarkClick: (SearchResultModel) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),

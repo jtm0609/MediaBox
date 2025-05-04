@@ -6,13 +6,13 @@ import androidx.paging.PagingState
 import com.example.data.Constants.PAGE_SIZE
 import com.example.data.Constants.STARTING_PAGE_INDEX
 import com.example.data.model.PagingEntity
-import com.example.domain.model.SearchItem
+import com.example.domain.model.SearchResult
 
-class RemoteSearchResultPagingSource (
+class SearchResultPagingSource (
     private val pagingEntity: PagingEntity
-) : PagingSource<Int, SearchItem>() {
+) : PagingSource<Int, SearchResult>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SearchItem> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SearchResult> {
 
         val page = params.key ?: STARTING_PAGE_INDEX
 
@@ -31,7 +31,7 @@ class RemoteSearchResultPagingSource (
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, SearchItem>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, SearchResult>): Int? {
         Log.d("taek","getRefresh!!")
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
@@ -42,7 +42,7 @@ class RemoteSearchResultPagingSource (
     private fun getSearchResultByPage(
         pagingResponse: PagingEntity,
         page: Int
-    ): List<SearchItem> {
+    ): List<SearchResult> {
         val chunkedList = pagingResponse.searchResults.chunked(PAGE_SIZE)
         return chunkedList[page - 1]
     }
