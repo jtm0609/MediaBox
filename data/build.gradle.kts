@@ -53,19 +53,6 @@ dependencies {
     implementation(libs.hilt.core)
     kapt(libs.hilt.compiler)
 
-    // Datastore
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("androidx.datastore:datastore:1.0.0")
-    implementation("androidx.datastore:datastore-preferences-core:1.0.0")
-
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-    testImplementation(libs.turbine)
-    testImplementation(libs.coroutines.test)
-
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
-    implementation ("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
-    implementation ("androidx.paging:paging-runtime:3.3.2")
+    implementation(libs.kotlinx.datetime)
+    implementation(libs.androidx.paging.runtime)
 }

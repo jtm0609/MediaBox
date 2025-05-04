@@ -38,22 +38,16 @@ android {
 dependencies {
     implementation(project(":data"))
 
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.datetime)
+
     implementation(libs.retrofit)
     implementation(libs.okhttp)
     implementation(libs.retrofit.kotlin.serialization)
-    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.hilt.android)
     implementation(libs.hilt.core)
     kapt(libs.hilt.compiler)
 
-    testImplementation(libs.junit)
-    testImplementation(libs.mockk)
-    testImplementation(libs.turbine)
-    testImplementation(libs.coroutines.test)
 
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
-    implementation ("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
 }

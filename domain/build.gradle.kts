@@ -14,11 +14,15 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.hilt.core)
-    implementation(libs.androidx.paging.common.android)
-
-    kapt(libs.hilt.compiler)
     implementation(libs.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
-    implementation ("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
+    implementation(libs.kotlinx.datetime)
+
+    implementation(libs.hilt.core)
+    kapt(libs.hilt.compiler)
+
+    implementation(libs.androidx.paging.common.android)
+
+
+
 }

@@ -58,8 +58,7 @@ dependencies {
     kapt(libs.hilt.compiler)
 
     implementation(libs.paging.common.android)
-    //implementation(libs.paging.compose)
-    implementation("androidx.paging:paging-compose:3.3.6")
+    implementation(libs.paging.compose)
 
     implementation(libs.compose.runtime.android)
     implementation(libs.compose.material3.android)
@@ -73,15 +72,7 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.hilt.navigation.compose)
 
-    implementation(libs.retrofit)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    testImplementation(libs.mockk)
-    testImplementation(libs.turbine)
-    testImplementation(libs.coroutines.test)
-
-    implementation("io.coil-kt:coil-compose:2.4.0")
-    implementation ("org.jetbrains.kotlinx:kotlinx-datetime:0.3.2")
-    implementation ("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.5")
+    implementation(libs.coil.compose)
+    implementation(libs.kotlinx.datetime)
+    implementation(libs.kotlinx.collections.immutable)
 }
