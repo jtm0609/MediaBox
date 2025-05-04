@@ -16,9 +16,11 @@ class SearchContract {
     sealed class State : UiState {
         data object Idle : State()
         data object Loading : State()
-        data class Error(val throwable: Throwable) : State()
         data class Success(val searchResultPagingList: PagingData<SearchResultModel>) : State()
     }
 
-    sealed class Effect : UiEffect
+    sealed class Effect : UiEffect {
+        data class ShowError(val throwable: Throwable) : Effect()
+        data object HideKeyBoard : Effect()
+    }
 }

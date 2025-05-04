@@ -12,11 +12,12 @@ class BookmarkContract {
     sealed class State : UiState {
         data object Idle : State()
         data object Loading : State()
-        data class Error(val throwable: Throwable) : State()
         data class Success(
             val bookmarkList: List<BookmarkModel>
         ) : State()
     }
 
-    sealed class Effect : UiEffect
+    sealed class Effect : UiEffect {
+        data class ShowError(val throwable: Throwable) : Effect()
+    }
 }

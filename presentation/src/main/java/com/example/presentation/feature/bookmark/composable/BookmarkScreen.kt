@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +24,17 @@ fun BookmarkScreen(
     bookmarkViewModel: BookmarkViewModel = hiltViewModel()
 ) {
     val state by bookmarkViewModel.uiState.collectAsStateWithLifecycle()
+    val effectFlow = bookmarkViewModel.effect
+
+    LaunchedEffect(effectFlow) {
+        effectFlow.collect { effect ->
+            when (effect) {
+                is BookmarkContract.Effect.ShowError -> {
+                    onShowErrorSnackBar(effect.throwable)
+                }
+            }
+        }
+    }
 
     BookmarkScreenContent(
         state = state,
@@ -43,7 +55,6 @@ private fun BookmarkScreenContent(
             .padding(padding)
     ) {
         when (state) {
-            is BookmarkContract.State.Error -> onShowErrorSnackBar(state.throwable)
             is BookmarkContract.State.Idle -> EmptyBookmarksGuide()
             is BookmarkContract.State.Loading -> Progress()
             is BookmarkContract.State.Success -> BookmarkGrid(bookmarks = state.bookmarkList)

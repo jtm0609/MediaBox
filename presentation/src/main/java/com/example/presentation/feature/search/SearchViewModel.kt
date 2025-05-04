@@ -80,7 +80,7 @@ class SearchViewModel @Inject constructor(
                 }
                 updateBookmarkState(item, newBookmarkState)
             } catch (e: Exception) {
-                setState { SearchContract.State.Error(e) }
+                setEffect { SearchContract.Effect.ShowError(e) }
             }
         }
     }
@@ -101,7 +101,7 @@ class SearchViewModel @Inject constructor(
                     searchResultFlow.emit(updatedPagingData)
                 }
             } catch (e: Exception) {
-                setState { SearchContract.State.Error(e) }
+                setEffect { SearchContract.Effect.ShowError(e) }
             }
         }
     }
@@ -117,13 +117,14 @@ class SearchViewModel @Inject constructor(
 
                             cachedFlow.collectLatest { pagingData ->
                                 val mappedResults = pagingData.map { it.toSearchResultModel() }
+                                setEffect { SearchContract.Effect.HideKeyBoard }
                                 setState { SearchContract.State.Success(mappedResults) }
                                 searchResultFlow.emit(mappedResults)
                             }
                         }
                     }
             } catch (e: Exception) {
-                setState { SearchContract.State.Error(e) }
+                setEffect { SearchContract.Effect.ShowError(e) }
             }
         }
     }

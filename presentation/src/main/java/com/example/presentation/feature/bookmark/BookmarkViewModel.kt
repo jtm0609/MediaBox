@@ -27,7 +27,7 @@ class BookmarkViewModel @Inject constructor(
         viewModelScope.launch {
             getBookmarksUseCase()
                 .onStart { BookmarkContract.State.Loading }
-                .catch { BookmarkContract.State.Error(throwable = it) }
+                .catch { BookmarkContract.Effect.ShowError(throwable = it) }
                 .collect { bookmarkList ->
                     setState {
                         BookmarkContract.State.Success(bookmarkList = bookmarkList.map { it.toBookmarkModel()})

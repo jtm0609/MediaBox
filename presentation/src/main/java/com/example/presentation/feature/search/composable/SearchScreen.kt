@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,14 +34,27 @@ fun SearchScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val searchPagingItems = viewModel.searchResultFlow.collectAsLazyPagingItems()
     var queryState by remember { mutableStateOf("") }
+    val effectFlow = viewModel.effect
+
+    LaunchedEffect(effectFlow) {
+        effectFlow.collect { effect ->
+            when (effect) {
+                is SearchContract.Effect.ShowError -> {
+                    onShowErrorSnackBar(effect.throwable)
+                }
+
+                SearchContract.Effect.HideKeyBoard -> {
+                    onHideKeyboard()
+                }
+            }
+        }
+    }
 
     SearchScreenContent(
         state = state,
         searchPagingItems = searchPagingItems,
         query = queryState,
         padding = padding,
-        onShowErrorSnackBar = onShowErrorSnackBar,
-        onHideKeyboard = onHideKeyboard,
         onQueryChange = {
             queryState = it
             viewModel.setEvent(SearchContract.Event.OnSearchKeywordChanged(it))
@@ -57,8 +71,6 @@ private fun SearchScreenContent(
     searchPagingItems: LazyPagingItems<SearchResultModel>,
     query: String = "",
     padding: PaddingValues,
-    onShowErrorSnackBar: (throwable: Throwable) -> Unit,
-    onHideKeyboard: () -> Unit,
     onQueryChange: (String) -> Unit = {},
     onBookmarkClick: (SearchResultModel) -> Unit = {}
 ) {
@@ -82,13 +94,7 @@ private fun SearchScreenContent(
             when (state) {
                 is SearchContract.State.Idle -> EmptySearchGuide()
                 is SearchContract.State.Loading -> Progress()
-                is SearchContract.State.Error -> {
-                    onShowErrorSnackBar(state.throwable)
-                    onHideKeyboard()
-                }
-
                 is SearchContract.State.Success -> {
-                    onHideKeyboard()
                     SearchResultGrid(
                         searchItems = searchPagingItems,
                         onBookmarkClick = onBookmarkClick
