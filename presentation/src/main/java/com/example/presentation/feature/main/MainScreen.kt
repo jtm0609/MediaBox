@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.example.presentation.R
 import com.example.presentation.navigation.Navigator
@@ -35,11 +36,16 @@ fun MainScreen(
             )
         }
     }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val onHideKeyboard: () -> Unit = {
+        keyboardController?.hide()
+    }
 
     MainScreenContent(
         navigator = navigator,
         onShowErrorSnackBar = onShowErrorSnackBar,
-        snackBarHostState = snackBarHostState
+        snackBarHostState = snackBarHostState,
+        onHideKeyboard = onHideKeyboard
     )
 }
 
@@ -47,6 +53,7 @@ fun MainScreen(
 private fun MainScreenContent(
     navigator: Navigator,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
+    onHideKeyboard: () -> Unit,
     snackBarHostState: SnackbarHostState
 ) {
     Scaffold(
@@ -54,7 +61,8 @@ private fun MainScreenContent(
             MainNaviHost(
                 padding = paddingValue,
                 navigator = navigator,
-                onShowErrorSnackBar = onShowErrorSnackBar
+                onShowErrorSnackBar = onShowErrorSnackBar,
+                onHideKeyboard = onHideKeyboard
             )
         },
         bottomBar = {

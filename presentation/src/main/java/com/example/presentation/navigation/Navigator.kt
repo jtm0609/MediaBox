@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navOptions
 import com.example.presentation.feature.bookmark.navigateBookmark
-import com.example.presentation.feature.home.navigateSearch
+import com.example.presentation.feature.search.navigateSearch
 import com.example.presentation.feature.main.MainTab
 
 class Navigator(
@@ -32,7 +32,6 @@ class Navigator(
     fun navigate(tab: MainTab) {
         val navOptions = navOptions {
             popUpTo(navController.graph.findStartDestination().id) {
-                inclusive = true
                 saveState = true
             }
             launchSingleTop = true

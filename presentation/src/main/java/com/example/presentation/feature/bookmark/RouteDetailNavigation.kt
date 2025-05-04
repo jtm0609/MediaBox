@@ -5,6 +5,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import com.example.presentation.feature.bookmark.composable.BookmarkScreen
 import com.example.presentation.navigation.NavRoute
 
 fun NavController.navigateBookmark(navOptions: NavOptions) {
@@ -15,7 +16,7 @@ fun NavGraphBuilder.bookmarkNavGraph(
     padding: PaddingValues,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit
 ) {
-    composable<NavRoute.BookMark> { navBackStackEntry ->
+    composable<NavRoute.BookMark> {
         BookmarkScreen(
             padding = padding,
             onShowErrorSnackBar = onShowErrorSnackBar

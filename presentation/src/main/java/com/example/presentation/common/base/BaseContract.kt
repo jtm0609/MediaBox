@@ -1,4 +1,4 @@
-package com.example.presentation.base
+package com.example.presentation.common.base
 
 interface UiEvent
 interface UiState

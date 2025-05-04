@@ -11,7 +11,7 @@ enum class MainTab(
 ) {
 
     Search(
-        iconResId = R.drawable.ic_home,
+        iconResId = R.drawable.ic_search,
         contentDescription = "검색",
         NavRoute.Search,
     ),

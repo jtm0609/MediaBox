@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.example.presentation.feature.bookmark.bookmarkNavGraph
-import com.example.presentation.feature.home.homeNavGraph
+import com.example.presentation.feature.search.searchNavGraph
 import com.example.presentation.navigation.Navigator
 
 @Composable
@@ -17,7 +17,8 @@ fun MainNaviHost(
     modifier: Modifier = Modifier,
     padding: PaddingValues,
     navigator: Navigator,
-    onShowErrorSnackBar: (throwable: Throwable?) -> Unit
+    onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
+    onHideKeyboard: () -> Unit
 ) {
     Box(
         modifier = modifier
@@ -28,9 +29,10 @@ fun MainNaviHost(
             navController = navigator.navController,
             startDestination = navigator.startDestination,
         ) {
-            homeNavGraph(
+            searchNavGraph(
                 padding = padding,
                 onShowErrorSnackBar = onShowErrorSnackBar,
+                onHideKeyboard = onHideKeyboard
             )
             bookmarkNavGraph(
                 padding = padding,
