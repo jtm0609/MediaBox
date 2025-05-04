@@ -1,28 +1,20 @@
 package com.example.local.model
 
-import com.example.data.model.DocumentItemEntity
+import com.example.data.model.BookmarkItemEntity
 import com.example.local.LocalMapper
-import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class SearchLocal(
-    val url: String,
-    val dateTime: LocalDateTime,
-    val bookMark: Boolean
-) : LocalMapper<DocumentItemEntity> {
-    override fun toData(): DocumentItemEntity =
-        DocumentItemEntity(
-            url = url,
-            dateTime = dateTime,
-            bookMark = bookMark
+    val url: String
+) : LocalMapper<BookmarkItemEntity> {
+    override fun toData(): BookmarkItemEntity =
+        BookmarkItemEntity(
+            url = url
         )
-
 }
 
-fun DocumentItemEntity.toLocal(): SearchLocal =
+fun BookmarkItemEntity.toLocal(): SearchLocal =
     SearchLocal(
-        url = url,
-        dateTime = dateTime,
-        bookMark = bookMark
+        url = url
     )

@@ -1,7 +1,7 @@
 package com.example.local.impl
 
 import com.example.data.datasource.BookmarkLocalDataSource
-import com.example.data.model.DocumentItemEntity
+import com.example.data.model.BookmarkItemEntity
 import com.example.local.datastroe.DataStoreManager
 import com.example.local.model.SearchLocal
 import com.example.local.model.toLocal
@@ -15,13 +15,13 @@ class BookmarkLocalDataSourceImpl @Inject constructor(
     private val dataStoreManager: DataStoreManager
 ) : BookmarkLocalDataSource {
 
-    override suspend fun saveBookmarkItem(item: DocumentItemEntity) {
+    override suspend fun saveBookmarkItem(item: BookmarkItemEntity) {
         val list = getBookmarks().first().map { it.toLocal() }.toMutableList()
         list.add(item.toLocal())
         dataStoreManager.putObjectList<SearchLocal>(BOOKMARK_KEY, list).invoke()
     }
 
-    override suspend fun removeBookmarkItem(item: DocumentItemEntity): Boolean {
+    override suspend fun removeBookmarkItem(item: BookmarkItemEntity): Boolean {
         val list = getBookmarks().first().map { it.toLocal() }.toMutableList()
         val index = list.indexOfFirst { it.url == item.url }
         if (index == -1) return false
@@ -31,7 +31,7 @@ class BookmarkLocalDataSourceImpl @Inject constructor(
         return true
     }
 
-    override fun getBookmarks(): Flow<List<DocumentItemEntity>> =
+    override fun getBookmarks(): Flow<List<BookmarkItemEntity>> =
         dataStoreManager.getObjectListFlow<SearchLocal>(BOOKMARK_KEY).map { it.toData() }
 
     override suspend fun isBookmarked(url: String): Boolean =

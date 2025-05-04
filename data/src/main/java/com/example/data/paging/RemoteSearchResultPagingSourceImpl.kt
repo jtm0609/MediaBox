@@ -34,7 +34,6 @@ class RemoteSearchResultPagingSource (
         return null
     }
 
-
     private fun getSearchResultByPage(
         pagingResponse: PagingEntity,
         page: Int

@@ -8,6 +8,7 @@ data class SearchItemsEntity(
     val items: List<DocumentItemEntity>,
     val isEnd: Boolean
 ) : DataMapper<List<SearchItem>> {
+
     override fun toDomain(): List<SearchItem> =
         items.map {
             SearchItem(

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
+import com.example.domain.model.BookmarkItem
 import com.example.domain.usecase.GetSearchResultUseCase
 import com.example.domain.usecase.RemoveBookmarkUseCase
 import com.example.domain.usecase.SaveBookmarkUseCase
@@ -74,11 +75,12 @@ class HomeViewModel @Inject constructor(
                         // 북마크 상태 토글
                         val newBookmarkState = !item.bookMark
 
+
                         // 북마크 상태에 따라 저장 또는 삭제
                         if (item.bookMark) {
-                            removeBookmarkUseCase(item.toDomain())
+                            removeBookmarkUseCase(BookmarkItem(item.url))
                         } else {
-                            saveBookmarkUseCase(item.toDomain())
+                            saveBookmarkUseCase(BookmarkItem(item.url))
                         }
 
                         // 현재 PagingData의 해당 아이템만 업데이트

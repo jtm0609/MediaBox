@@ -1,6 +1,5 @@
 package com.example.presentation.feature.bookmark
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.domain.usecase.GetBookmarksUseCase
 import com.example.presentation.base.BaseViewModel
@@ -31,7 +30,6 @@ class BookmarkViewModel @Inject constructor(
                 .onStart { setState { this.copy(isLoading = true) } }
                 .catch { setState { this.copy(isLoading = false, error = it) } }
                 .collect { bookmarkList ->
-                    Log.d("taek", "Adasdas")
                     setState {
                         this.copy(
                             isLoading = false,

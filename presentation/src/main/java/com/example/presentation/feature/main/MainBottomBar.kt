@@ -29,8 +29,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.example.knowmerceassignment.ui.theme.KnowmerceAssignmentTheme
-import com.example.knowmerceassignment.ui.theme.Neon
+import com.example.presentation.theme.KnowmerceAssignmentTheme
+import com.example.presentation.theme.Neon
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 

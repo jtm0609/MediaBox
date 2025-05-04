@@ -1,12 +1,12 @@
 package com.example.presentation.model
 
-import com.example.domain.model.SearchItem
+import com.example.domain.model.BookmarkItem
 
 data class BookmarkItemModel(
     val url: String
 )
 
-fun SearchItem.toBookmarkItemModel(): BookmarkItemModel {
+fun BookmarkItem.toBookmarkItemModel(): BookmarkItemModel {
     return BookmarkItemModel(
         url = url
     )

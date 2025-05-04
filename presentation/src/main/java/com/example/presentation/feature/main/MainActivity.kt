@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
-import com.example.knowmerceassignment.ui.theme.KnowmerceAssignmentTheme
+import com.example.presentation.theme.KnowmerceAssignmentTheme
 import com.example.presentation.navigation.Navigator
 import dagger.hilt.android.AndroidEntryPoint
 
