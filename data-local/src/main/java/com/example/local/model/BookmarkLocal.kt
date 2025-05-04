@@ -5,7 +5,7 @@ import com.example.local.LocalMapper
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SearchLocal(
+data class BookmarkLocal(
     val url: String
 ) : LocalMapper<BookmarkItemEntity> {
 
@@ -15,7 +15,7 @@ data class SearchLocal(
         )
 }
 
-fun BookmarkItemEntity.toLocal(): SearchLocal =
-    SearchLocal(
+fun BookmarkItemEntity.toLocal(): BookmarkLocal =
+    BookmarkLocal(
         url = url
     )

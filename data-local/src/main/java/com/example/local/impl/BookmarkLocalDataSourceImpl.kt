@@ -3,7 +3,7 @@ package com.example.local.impl
 import com.example.data.datasource.BookmarkLocalDataSource
 import com.example.data.model.BookmarkItemEntity
 import com.example.local.datastroe.DataStoreManager
-import com.example.local.model.SearchLocal
+import com.example.local.model.BookmarkLocal
 import com.example.local.model.toLocal
 import com.example.local.toData
 import kotlinx.coroutines.flow.Flow
@@ -16,7 +16,7 @@ class BookmarkLocalDataSourceImpl @Inject constructor(
 ) : BookmarkLocalDataSource {
 
     override suspend fun saveBookmarkItem(item: BookmarkItemEntity) {
-        val currentBookmarks = dataStoreManager.getObjectListFlow<SearchLocal>(BOOKMARK_KEY).first()
+        val currentBookmarks = dataStoreManager.getObjectListFlow<BookmarkLocal>(BOOKMARK_KEY).first()
         val updatedBookmarks = currentBookmarks.toMutableList().apply {
             add(item.toLocal())
         }
@@ -24,7 +24,7 @@ class BookmarkLocalDataSourceImpl @Inject constructor(
     }
 
     override suspend fun removeBookmarkItem(item: BookmarkItemEntity): Boolean {
-        val currentBookmarks = dataStoreManager.getObjectListFlow<SearchLocal>(BOOKMARK_KEY).first()
+        val currentBookmarks = dataStoreManager.getObjectListFlow<BookmarkLocal>(BOOKMARK_KEY).first()
         val index = currentBookmarks.indexOfFirst { it.url == item.url }
         if (index == -1) return false
         val updatedBookmarks = currentBookmarks.toMutableList().apply {
@@ -35,10 +35,10 @@ class BookmarkLocalDataSourceImpl @Inject constructor(
     }
 
     override fun getBookmarks(): Flow<List<BookmarkItemEntity>> =
-        dataStoreManager.getObjectListFlow<SearchLocal>(BOOKMARK_KEY).map { it.toData() }
+        dataStoreManager.getObjectListFlow<BookmarkLocal>(BOOKMARK_KEY).map { it.toData() }
 
     override suspend fun isBookmarked(url: String): Boolean =
-        dataStoreManager.getObjectListFlow<SearchLocal>(BOOKMARK_KEY).first()
+        dataStoreManager.getObjectListFlow<BookmarkLocal>(BOOKMARK_KEY).first()
             .any { it.url == url }
 
     companion object {
