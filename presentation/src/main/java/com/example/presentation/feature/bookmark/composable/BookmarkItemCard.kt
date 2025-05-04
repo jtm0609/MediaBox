@@ -2,15 +2,14 @@ package com.example.presentation.feature.bookmark.composable
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import com.example.presentation.common.composable.ItemImage
 import com.example.presentation.model.BookmarkModel
 
 @Composable
@@ -27,14 +26,15 @@ fun BookmarkItemCard(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            AsyncImage(
-                model = item.url,
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp),
-                contentScale = ContentScale.Crop
-            )
+            ItemImage(url = item.url)
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BookmarkItemCardPreview() {
+    BookmarkItemCard(
+        item = BookmarkModel("https://search4.kakaocdn.net/argon/138x78_80_pr/E1H7Out9GDz")
+    )
 }

@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.presentation.R
 import com.example.presentation.theme.Black
@@ -35,5 +36,23 @@ fun BookmarkIcon(
             .padding(2.dp)
             .clickable { onClick() },
         tint = if (isBookmarked) Yellow else White.copy(alpha = 0.3f)
+    )
+}
+
+@Preview(name = "북마크 선택 상태", showBackground = true)
+@Composable
+fun BookmarkedIconPreview() {
+    BookmarkIcon(
+        isBookmarked = true,
+        onClick = {}
+    )
+}
+
+@Preview(name = "북마크 미 선택 상태", showBackground = true)
+@Composable
+fun NotBookmarkedIconPreview() {
+    BookmarkIcon(
+        isBookmarked = false,
+        onClick = {}
     )
 }

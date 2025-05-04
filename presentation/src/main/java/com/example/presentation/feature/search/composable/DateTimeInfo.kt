@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.presentation.theme.Black
 import com.example.presentation.theme.White
@@ -39,4 +40,13 @@ fun DateTimeInfo(
             fontWeight = FontWeight.Bold
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DateTimeInfoPreview() {
+    DateTimeInfo(
+        date = "2023.05.15",
+        time = "14:30"
+    )
 }

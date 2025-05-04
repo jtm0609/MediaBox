@@ -7,7 +7,9 @@ import androidx.compose.material3.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.presentation.common.composable.ItemImage
 import com.example.presentation.model.SearchResultModel
 
 @Composable
@@ -38,4 +40,18 @@ fun SearchItemCard(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SearchItemCardPreview() {
+    SearchItemCard(
+        item = SearchResultModel(
+            url = "https://search4.kakaocdn.net/argon/138x78_80_pr/E1H7Out9GDz",
+            date = "2023.05.15",
+            time = "14:30",
+            bookMark = true
+        ),
+        onBookmarkClick = {}
+    )
 }

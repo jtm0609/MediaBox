@@ -1,4 +1,4 @@
-package com.example.presentation.feature.search.composable
+package com.example.presentation.common.composable
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height

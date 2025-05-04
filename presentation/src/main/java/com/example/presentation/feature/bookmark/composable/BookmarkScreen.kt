@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.presentation.common.composable.Progress
 import com.example.presentation.feature.bookmark.BookmarkContract
+import com.example.presentation.feature.bookmark.BookmarkPreviewProvider
 import com.example.presentation.feature.bookmark.BookmarkViewModel
 
 @Composable
@@ -39,11 +42,23 @@ private fun BookmarkScreenContent(
             .fillMaxSize()
             .padding(padding)
     ) {
-        when(state) {
+        when (state) {
             is BookmarkContract.State.Error -> onShowErrorSnackBar(state.throwable)
             is BookmarkContract.State.Idle -> EmptyBookmarksGuide()
             is BookmarkContract.State.Loading -> Progress()
             is BookmarkContract.State.Success -> BookmarkGrid(bookmarks = state.bookmarkList)
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BookmarkScreenPreview(
+    @PreviewParameter(BookmarkPreviewProvider::class) state: BookmarkContract.State
+) {
+    BookmarkScreenContent(
+        state = state,
+        padding = PaddingValues(),
+        onShowErrorSnackBar = {}
+    )
 }
