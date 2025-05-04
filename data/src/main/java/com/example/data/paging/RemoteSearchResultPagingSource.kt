@@ -25,7 +25,7 @@ class RemoteSearchResultPagingSource (
                 prevKey = if (page == STARTING_PAGE_INDEX) null else page - 1,
                 nextKey = if (page == calculateTotalPage(pagingEntity.searchResults.size)) null else page + 1
             )
-        }catch (exception: Exception){
+        } catch (exception: Exception){
             LoadResult.Error(exception)
         }
     }

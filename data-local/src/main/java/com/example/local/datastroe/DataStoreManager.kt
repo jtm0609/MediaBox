@@ -23,20 +23,16 @@ class DataStoreManager @Inject constructor(
 ) {
     private val dataStore = context.dataStore
 
-    /**
-     * 문자열 값을 DataStore에 저장
-     */
+    private fun createPreferencesKey(key: String) = stringPreferencesKey(key)
+
     suspend fun putString(key: String, value: String) {
-        val prefKey = stringPreferencesKey(key)
+        val prefKey = createPreferencesKey(key)
         dataStore.edit { preferences ->
             preferences[prefKey] = value
         }
     }
 
-    /**
-     * 객체 리스트를 DataStore에 저장
-     */
-    inline fun <reified T> putObjectList(key: String, list: List<T>) = suspend {
+    suspend inline fun <reified T> putObjectList(key: String, list: List<T>) {
         val json = Json {
             encodeDefaults = true
             ignoreUnknownKeys = true
@@ -47,19 +43,13 @@ class DataStoreManager @Inject constructor(
         putString(key, jsonString)
     }
 
-    /**
-     * DataStore에서 문자열 값을 Flow로 조회
-     */
     fun getStringFlow(key: String, defaultValue: String = ""): Flow<String> {
-        val prefKey = stringPreferencesKey(key)
+        val prefKey = createPreferencesKey(key)
         return dataStore.data.map { preferences ->
             preferences[prefKey] ?: defaultValue
         }
     }
 
-    /**
-     * DataStore에서 객체 리스트를 Flow로 조회
-     */
     inline fun <reified T> getObjectListFlow(key: String): Flow<List<T>> {
         val json = Json {
             encodeDefaults = true

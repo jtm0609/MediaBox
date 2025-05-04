@@ -15,6 +15,7 @@ data class VideosResponse(
     @SerialName("documents")
     val documents: List<VideoDocumentsResponse>
 ) : RemoteMapper<SearchItemsEntity> {
+
     override fun toData(): SearchItemsEntity =
         SearchItemsEntity(
             isEnd = meta.isEnd,

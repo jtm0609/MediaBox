@@ -16,18 +16,21 @@ class BookmarkLocalDataSourceImpl @Inject constructor(
 ) : BookmarkLocalDataSource {
 
     override suspend fun saveBookmarkItem(item: BookmarkItemEntity) {
-        val list = getBookmarks().first().map { it.toLocal() }.toMutableList()
-        list.add(item.toLocal())
-        dataStoreManager.putObjectList<SearchLocal>(BOOKMARK_KEY, list).invoke()
+        val currentBookmarks = dataStoreManager.getObjectListFlow<SearchLocal>(BOOKMARK_KEY).first()
+        val updatedBookmarks = currentBookmarks.toMutableList().apply {
+            add(item.toLocal())
+        }
+        dataStoreManager.putObjectList(BOOKMARK_KEY, updatedBookmarks)
     }
 
     override suspend fun removeBookmarkItem(item: BookmarkItemEntity): Boolean {
-        val list = getBookmarks().first().map { it.toLocal() }.toMutableList()
-        val index = list.indexOfFirst { it.url == item.url }
+        val currentBookmarks = dataStoreManager.getObjectListFlow<SearchLocal>(BOOKMARK_KEY).first()
+        val index = currentBookmarks.indexOfFirst { it.url == item.url }
         if (index == -1) return false
-
-        list.removeAt(index)
-        dataStoreManager.putObjectList<SearchLocal>(BOOKMARK_KEY, list).invoke()
+        val updatedBookmarks = currentBookmarks.toMutableList().apply {
+            removeAt(index)
+        }
+        dataStoreManager.putObjectList(BOOKMARK_KEY, updatedBookmarks)
         return true
     }
 
@@ -35,7 +38,8 @@ class BookmarkLocalDataSourceImpl @Inject constructor(
         dataStoreManager.getObjectListFlow<SearchLocal>(BOOKMARK_KEY).map { it.toData() }
 
     override suspend fun isBookmarked(url: String): Boolean =
-        getBookmarks().first().any { it.url == url }
+        dataStoreManager.getObjectListFlow<SearchLocal>(BOOKMARK_KEY).first()
+            .any { it.url == url }
 
     companion object {
         const val BOOKMARK_KEY = "BOOKMARK_KEY"

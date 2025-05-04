@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit
 private const val TIME_OUT = 30
 
 fun createApiService(baseUrl: String): ApiInterface {
-
     val okHttpClient = OkHttpClient.Builder().apply {
         readTimeout(TIME_OUT.toLong(), TimeUnit.SECONDS)
         writeTimeout(TIME_OUT.toLong(), TimeUnit.SECONDS)

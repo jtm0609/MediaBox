@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
 data class SearchLocal(
     val url: String
 ) : LocalMapper<BookmarkItemEntity> {
+
     override fun toData(): BookmarkItemEntity =
         BookmarkItemEntity(
             url = url
