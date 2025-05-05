@@ -1,8 +1,8 @@
 plugins {
     id("com.android.application")
+    id("com.google.dagger.hilt.android")
     id("kotlin-android")
     id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -42,8 +42,8 @@ dependencies {
     implementation(project(":data-remote"))
     implementation(project(":data"))
     implementation(project(":domain"))
-    implementation(project(":presentation"))
+    implementation(project(":feature:main"))
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    kapt(libs.hilt.compiler)
 }

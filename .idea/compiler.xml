@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="21">
+    <bytecodeTargetLevel target="11">
       <module name="knowmerceAssignment.build-src" target="21" />
       <module name="knowmerceAssignment.build-src.main" target="21" />
       <module name="knowmerceAssignment.build-src.test" target="21" />
+      <module name="knowmerceAssignment.presentation" target="21" />
     </bytecodeTargetLevel>
   </component>
 </project>

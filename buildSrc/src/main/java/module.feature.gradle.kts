@@ -14,10 +14,11 @@ val libs: VersionCatalog = extensions.getByType<VersionCatalogsExtension>().name
 
 dependencies {
     implementation(project(":domain"))
-    implementation(project(":core"))
+    implementation(project(":core-ui"))
 
+    implementation(libs.getLibrary("androidx.lifecycle.viewmodel"))
+    implementation(libs.getLibrary("viewmodel.compose"))
+    implementation(libs.getLibrary("kotlinx.collections.immutable"))
+    implementation(libs.getLibrary("navigation.compose"))
     implementation(libs.getLibrary("hilt.navigation.compose"))
-    implementation(libs.getLibrary("androidx.lifecycle.viewmodel.compose"))
-    implementation(libs.getLibrary("androidx-lifecycle-viewmodel"))
-    implementation(libs.getBundle("navigation"))
 }

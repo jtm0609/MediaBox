@@ -9,7 +9,11 @@ pluginManagement {
 rootProject.name = "knowmerceAssignment"
 include(":app")
 include(":data")
-include(":presentation")
 include(":domain")
 include(":data-local")
 include(":data-remote")
+include(":feature")
+include(":feature:main")
+include(":feature:bookmark")
+include(":feature:search")
+include(":core-ui")

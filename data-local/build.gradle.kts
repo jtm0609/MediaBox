@@ -7,7 +7,6 @@ android {
 }
 
 dependencies {
-
     implementation(project(":data"))
 
     implementation(libs.datastore.preferences)

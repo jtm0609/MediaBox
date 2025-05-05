@@ -16,9 +16,6 @@ android {
         compose = true
     }
 
-    testOptions {
-        unitTests.isReturnDefaultValues = true
-    }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.getVersion("composeCompiler").toString()
     }

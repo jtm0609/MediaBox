@@ -14,7 +14,7 @@ android {
 dependencies {
     implementation(project(":domain"))
 
-    implementation(libs.lifecycle.viewmodel.compose)
+    implementation(libs.viewmodel.compose)
     implementation(libs.androidx.lifecycle.viewmodel)
 
     implementation(libs.paging.common.android)
