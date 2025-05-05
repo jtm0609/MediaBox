@@ -1,6 +1,3 @@
-import org.gradle.api.JavaVersion
-import org.gradle.api.plugins.PluginManager
-import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.dependencies
 
 plugins {

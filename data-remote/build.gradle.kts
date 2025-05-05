@@ -1,12 +1,20 @@
+import java.util.Properties
+
 plugins {
     id("module.android")
+}
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
 }
 
 android {
     namespace = "com.example.data.remote"
 
     defaultConfig {
-        buildConfigField("String", "REST_API_KEY", "\"KakaoAK b5702c968b4c29e6b1a45dbce386f6d9\"")
+        buildConfigField("String", "REST_API_KEY", "\"${localProperties["rest_api_key"]}\"")
     }
 
     buildFeatures {
