@@ -2,9 +2,23 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="11">
+      <module name="jtm06.knowmerceAssignment.feature.main" target="21" />
+      <module name="knowmerceAssignment.app" target="21" />
       <module name="knowmerceAssignment.build-src" target="21" />
       <module name="knowmerceAssignment.build-src.main" target="21" />
       <module name="knowmerceAssignment.build-src.test" target="21" />
+      <module name="knowmerceAssignment.buildSrc" target="21" />
+      <module name="knowmerceAssignment.buildSrc.main" target="21" />
+      <module name="knowmerceAssignment.buildSrc.test" target="21" />
+      <module name="knowmerceAssignment.core-ui" target="21" />
+      <module name="knowmerceAssignment.data" target="21" />
+      <module name="knowmerceAssignment.data-local" target="21" />
+      <module name="knowmerceAssignment.data-remote" target="21" />
+      <module name="knowmerceAssignment.domain" target="21" />
+      <module name="knowmerceAssignment.domain.main" target="21" />
+      <module name="knowmerceAssignment.domain.test" target="21" />
+      <module name="knowmerceAssignment.feature.bookmark" target="21" />
+      <module name="knowmerceAssignment.feature.search" target="21" />
       <module name="knowmerceAssignment.presentation" target="21" />
     </bytecodeTargetLevel>
   </component>

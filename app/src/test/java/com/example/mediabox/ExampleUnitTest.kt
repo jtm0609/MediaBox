@@ -1,4 +1,4 @@
-package com.example.knowmerceassignment
+package com.example.mediabox
 
 import org.junit.Test
 

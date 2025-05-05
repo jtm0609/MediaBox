@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.knowmerceassignment"
+    namespace = "com.example.mediabox"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.knowmerceassignment"
+        applicationId = "com.example.mediabox"
         minSdk = 28
         targetSdk = 35
         versionCode = 1

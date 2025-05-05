@@ -29,8 +29,12 @@ class BookmarkViewModel @Inject constructor(
                 .onStart { BookmarkContract.State.Loading }
                 .catch { BookmarkContract.Effect.ShowError(throwable = it) }
                 .collect { bookmarkList ->
-                    setState {
-                        BookmarkContract.State.Success(bookmarkList = bookmarkList.map { it.toBookmarkModel() })
+                    if (bookmarkList.isEmpty()) {
+                        setState { BookmarkContract.State.Idle }
+                    } else {
+                        setState {
+                            BookmarkContract.State.Success(bookmarkList = bookmarkList.map { it.toBookmarkModel() })
+                        }
                     }
                 }
         }

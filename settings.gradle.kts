@@ -6,7 +6,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "knowmerceAssignment"
+rootProject.name = "mediaBox"
 include(":app")
 include(":data")
 include(":domain")

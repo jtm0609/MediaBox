@@ -29,7 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.example.core_ui.theme.KnowmerceAssignmentTheme
+import com.example.core_ui.theme.MediaBoxTheme
 import com.example.core_ui.theme.Neon
 import com.example.main.MainTab
 import kotlinx.collections.immutable.PersistentList
@@ -111,7 +111,7 @@ private fun RowScope.MainBottomBarItem(
 @Preview
 @Composable
 private fun MainBottomBarPreview() {
-    KnowmerceAssignmentTheme {
+    MediaBoxTheme {
         MainBottomBar(
             visible = true,
             tabs = MainTab.entries.toPersistentList(),

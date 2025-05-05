@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
-import com.example.core_ui.theme.KnowmerceAssignmentTheme
+import com.example.core_ui.theme.MediaBoxTheme
 import com.example.main.component.MainNavigator
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val mainNavigator = MainNavigator(rememberNavController())
 
-            KnowmerceAssignmentTheme {
+            MediaBoxTheme {
                 MainScreen(
                     mainNavigator = mainNavigator
                 )

@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.core_ui.theme.KnowmerceAssignmentTheme
+import com.example.core_ui.theme.MediaBoxTheme
 import androidx.compose.material3.CircularProgressIndicator
 
 @Composable
@@ -22,7 +22,7 @@ fun Progress() {
 @Preview
 @Composable
 private fun ProgressPreview() {
-    KnowmerceAssignmentTheme {
+    MediaBoxTheme {
         Progress()
     }
 }
