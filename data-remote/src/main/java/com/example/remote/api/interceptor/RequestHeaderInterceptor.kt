@@ -1,6 +1,6 @@
 package com.example.remote.api.interceptor
 
-import com.example.data.BuildConfig
+import com.example.data.remote.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 
