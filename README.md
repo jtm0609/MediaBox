@@ -1,4 +1,4 @@
-## 📝 프로젝트 개요
+📝 프로젝트 개요
 MediaBox는 콘텐츠(이미지, 동영상)를 검색하고 북마크할 수 있는 앱입니다. 원하는 콘텐츠를 빠르게 찾고 저장할 수 있도록 제공하며, 모듈화된 클린 아키텍처를 적용하여 코드의 유지보수성과 확장성을 높였습니다.
 
 ## 🛠 기술 스택
@@ -86,3 +86,9 @@ MediaBox는 콘텐츠(이미지, 동영상)를 검색하고 북마크할 수 있
 │  Data      │ │  Data      │
 └────────────┘ └────────────┘
 ```
+
+## 📷 스크린 샷
+<p align="">
+  <img src="https://github.com/user-attachments/assets/d9c93f65-1297-4905-a11c-49a16504b1b4" width="40%" />
+  <img src="https://github.com/user-attachments/assets/adfd0e3a-b36e-4b12-81d0-8bb1a4734261" width="40%" /> 
+</p>
