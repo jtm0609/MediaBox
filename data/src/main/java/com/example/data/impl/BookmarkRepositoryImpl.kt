@@ -2,6 +2,7 @@ package com.example.data.impl
 
 import com.example.data.datasource.BookmarkLocalDataSource
 import com.example.data.model.toData
+import com.example.data.toDomain
 import com.example.domain.model.Bookmark
 import com.example.domain.repository.BookmarkRepository
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +15,7 @@ class BookmarkRepositoryImpl @Inject constructor(
 
     override suspend fun getBookmarks(): Flow<List<Bookmark>> =
         bookmarkLocalDataSource.getBookmarks().map { bookmarks ->
-            bookmarks.map { it.toDomain() }
+            bookmarks.toDomain()
         }
 
     override suspend fun saveBookmark(bookmark: Bookmark) {

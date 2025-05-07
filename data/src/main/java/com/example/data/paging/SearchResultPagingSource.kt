@@ -1,6 +1,5 @@
 package com.example.data.paging
 
-import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.data.Constants.PAGE_SIZE
@@ -32,7 +31,6 @@ class SearchResultPagingSource (
     }
 
     override fun getRefreshKey(state: PagingState<Int, SearchResult>): Int? {
-        Log.d("taek","getRefresh!!")
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
