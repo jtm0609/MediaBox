@@ -40,7 +40,7 @@ class SearchViewModel @Inject constructor(
 
     override fun handleEvent(event: SearchContract.Event) {
         when (event) {
-            is SearchContract.Event.OnSearchKeywordChanged -> {
+            is SearchContract.Event.OnSearchKeyword -> {
                 emitSearchQuery(event.query)
             }
 

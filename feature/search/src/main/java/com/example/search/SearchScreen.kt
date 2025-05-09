@@ -10,9 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -34,7 +31,6 @@ fun SearchScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val searchPagingItems = viewModel.searchResultFlow.collectAsLazyPagingItems()
-    var queryState by rememberSaveable { mutableStateOf("") }
     val effectFlow = viewModel.effect
 
     LaunchedEffect(effectFlow) {
@@ -54,11 +50,9 @@ fun SearchScreen(
     SearchScreenContent(
         state = state,
         searchPagingItems = searchPagingItems,
-        query = queryState,
         padding = padding,
-        onQueryChange = {
-            queryState = it
-            viewModel.setEvent(SearchContract.Event.OnSearchKeywordChanged(it))
+        onSearchKeyword = {
+            viewModel.setEvent(SearchContract.Event.OnSearchKeyword(it))
         },
         onBookmarkClick = { item ->
             viewModel.setEvent(SearchContract.Event.OnClickBookmark(item))
@@ -70,9 +64,8 @@ fun SearchScreen(
 private fun SearchScreenContent(
     state: SearchContract.State,
     searchPagingItems: LazyPagingItems<SearchResultModel>,
-    query: String = "",
     padding: PaddingValues,
-    onQueryChange: (String) -> Unit = {},
+    onSearchKeyword: (String) -> Unit = {},
     onBookmarkClick: (SearchResultModel) -> Unit = {}
 ) {
     Box(
@@ -86,8 +79,7 @@ private fun SearchScreenContent(
                 .padding(16.dp)
         ) {
             SearchBar(
-                query = query,
-                onQueryChange = onQueryChange
+                onSearchKeyword = onSearchKeyword
             )
 
             Spacer(modifier = Modifier.height(16.dp))
