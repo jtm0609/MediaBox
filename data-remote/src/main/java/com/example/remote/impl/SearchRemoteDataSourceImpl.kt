@@ -9,18 +9,18 @@ class SearchRemoteDataSourceImpl @Inject constructor(
     private val apiInterface: ApiInterface
 ): SearchRemoteDataSource {
 
-    override suspend fun getImageSearchResult(query: String, page: Int, size: Int, sort: String): SearchResultEntity {
+    override suspend fun getImageSearchResult(keyword: String, page: Int, size: Int, sort: String): SearchResultEntity {
         return apiInterface.getImages(
-            query = query,
+            keyword = keyword,
             page = page,
             size = size,
             sort = sort
         ).toData()
     }
 
-    override suspend fun getVideoSearchResult(query: String, page: Int, size: Int, sort: String): SearchResultEntity {
+    override suspend fun getVideoSearchResult(keyword: String, page: Int, size: Int, sort: String): SearchResultEntity {
         return apiInterface.getVideos(
-            query = query,
+            keyword = keyword,
             page = page,
             size = size,
             sort = sort

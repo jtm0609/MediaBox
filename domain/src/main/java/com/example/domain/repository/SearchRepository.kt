@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.Flow
 interface SearchRepository {
 
     suspend fun getInitSearchResults(
-        query: String
+        keyword: String
     ): Flow<PagingData<SearchResult>>
 
     suspend fun getTotalSearchResults(
-        query: String
+        keyword: String
     ): Flow<PagingData<SearchResult>>
 }

@@ -9,7 +9,7 @@ import com.example.search.model.SearchResultModel
 class SearchContract {
 
     sealed class Event : UiEvent {
-        data class OnSearchKeyword(val query: String) : Event()
+        data class OnSearchKeyword(val keyword: String) : Event()
         data class OnClickBookmark(val searchResultModel: SearchResultModel) : Event()
     }
 

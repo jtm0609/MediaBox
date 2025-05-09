@@ -17,12 +17,12 @@ import com.example.search.R
 fun SearchBar(
     onSearchKeyword: (String) -> Unit
 ) {
-    var queryState by rememberSaveable { mutableStateOf("") }
+    var keywordState by rememberSaveable { mutableStateOf("") }
 
     OutlinedTextField(
-        value = queryState,
+        value = keywordState,
         onValueChange = {
-            queryState = it
+            keywordState = it
             onSearchKeyword(it)
         },
         placeholder = { Text(stringResource(R.string.search_guide_message)) },

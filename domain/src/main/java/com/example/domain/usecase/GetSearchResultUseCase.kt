@@ -11,8 +11,8 @@ class GetSearchResultUseCase @Inject constructor(
     private val searchRepository: SearchRepository,
 ) {
 
-    operator fun invoke(query: String): Flow<Flow<PagingData<SearchResult>>> = flow {
-        emit(searchRepository.getInitSearchResults(query))
-        emit(searchRepository.getTotalSearchResults(query))
+    operator fun invoke(keyword: String): Flow<Flow<PagingData<SearchResult>>> = flow {
+        emit(searchRepository.getInitSearchResults(keyword))
+        emit(searchRepository.getTotalSearchResults(keyword))
     }
 }

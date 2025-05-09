@@ -30,10 +30,10 @@ class SearchViewModel @Inject constructor(
 
     val searchResultFlow: MutableStateFlow<PagingData<SearchResultModel>> =
         MutableStateFlow(PagingData.empty())
-    private val _searchQueryFlow = MutableSharedFlow<String>()
+    private val _searchKeywordFlow = MutableSharedFlow<String>()
 
     init {
-        setupSearchQueryFlow()
+        setupSearchKeywordFlow()
     }
 
     override fun createInitialState(): SearchContract.State = SearchContract.State.Idle
@@ -41,7 +41,7 @@ class SearchViewModel @Inject constructor(
     override fun handleEvent(event: SearchContract.Event) {
         when (event) {
             is SearchContract.Event.OnSearchKeyword -> {
-                emitSearchQuery(event.query)
+                emitSearchKeyword(event.keyword)
             }
 
             is SearchContract.Event.OnClickBookmark -> {
@@ -51,21 +51,21 @@ class SearchViewModel @Inject constructor(
     }
 
     @OptIn(FlowPreview::class)
-    private fun setupSearchQueryFlow() {
+    private fun setupSearchKeywordFlow() {
         viewModelScope.launch {
-            _searchQueryFlow
+            _searchKeywordFlow
                 .debounce(500)
                 .distinctUntilChanged()
-                .collect { query ->
-                    if (query.isEmpty()) setState { SearchContract.State.Idle }
-                    else getSearchResult(query)
+                .collect { keyword ->
+                    if (keyword.isEmpty()) setState { SearchContract.State.Idle }
+                    else getSearchResult(keyword)
                 }
         }
     }
 
-    private fun emitSearchQuery(query: String) {
+    private fun emitSearchKeyword(keyword: String) {
         viewModelScope.launch {
-            _searchQueryFlow.emit(query)
+            _searchKeywordFlow.emit(keyword)
         }
     }
 
@@ -106,11 +106,11 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun getSearchResult(query: String) {
+    private fun getSearchResult(keyword: String) {
         viewModelScope.launch {
             try {
                 setState { SearchContract.State.Loading }
-                searchResultsUseCase(query)
+                searchResultsUseCase(keyword)
                     .collect { resultFlow ->
                         launch {
                             val cachedFlow = resultFlow.cachedIn(viewModelScope)

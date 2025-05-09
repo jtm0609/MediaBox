@@ -34,39 +34,39 @@ class SearchRepositoryImpl @Inject constructor(
     private val searchCache = mutableMapOf<String, SearchResultCache>()
 
     // 초기 검색 결과를 가져오는 함수 (캐시 있으면 빈 데이터 반환)
-    override suspend fun getInitSearchResults(query: String): Flow<PagingData<SearchResult>> {
-        checkCache(query, returnEmptyOnCacheHit = true)?.let {
+    override suspend fun getInitSearchResults(keyword: String): Flow<PagingData<SearchResult>> {
+        checkCache(keyword, returnEmptyOnCacheHit = true)?.let {
             return createPager(it)
         }
 
         val pagingResponse = combine(
-            getImageSearchFlow(query),
-            getVideoSearchFlow(query)
+            getImageSearchFlow(keyword),
+            getVideoSearchFlow(keyword)
         ) { imageResponse, videoResponse ->
-            processSearchResults(imageResponse, videoResponse, query)
+            processSearchResults(imageResponse, videoResponse, keyword)
         }.first()
 
         return createPager(pagingResponse)
     }
 
     // 전체 검색 결과를 가져오는 함수 (캐시 있으면 캐시된 결과 반환)
-    override suspend fun getTotalSearchResults(query: String): Flow<PagingData<SearchResult>> {
-        checkCache(query)?.let {
+    override suspend fun getTotalSearchResults(keyword: String): Flow<PagingData<SearchResult>> {
+        checkCache(keyword)?.let {
             return createPager(it)
         }
 
         val pagingResponse = combine(
-            getImageSearchFlow(query, fetchAll = true),
-            getVideoSearchFlow(query, fetchAll = true)
+            getImageSearchFlow(keyword, fetchAll = true),
+            getVideoSearchFlow(keyword, fetchAll = true)
         ) { imageList, videoList ->
-            processSearchResults(imageList, videoList, query, shouldCache = true)
+            processSearchResults(imageList, videoList, keyword, shouldCache = true)
         }.first()
 
         return createPager(pagingResponse)
     }
 
     // 이미지 검색 결과를 가져오는 Flow 생성
-    private fun getImageSearchFlow(query: String, fetchAll: Boolean = false) = flow {
+    private fun getImageSearchFlow(keyword: String, fetchAll: Boolean = false) = flow {
         if (fetchAll) {
             val imageList = mutableListOf<SearchResult>()
             var page = 1
@@ -74,7 +74,7 @@ class SearchRepositoryImpl @Inject constructor(
 
             while (page < IMAGE_API_PAGE_MAX && !isEnd) {
                 val response = searchRemoteDataSource.getImageSearchResult(
-                    query = query,
+                    keyword = keyword,
                     page = page,
                     size = Constants.IMAGE_API_SIZE_MAX,
                     sort = Constants.RECENCY
@@ -86,7 +86,7 @@ class SearchRepositoryImpl @Inject constructor(
             emit(imageList)
         } else {
             val response = searchRemoteDataSource.getImageSearchResult(
-                query = query,
+                keyword = keyword,
                 page = 1,
                 size = Constants.IMAGE_API_SIZE_MAX,
                 sort = Constants.RECENCY
@@ -96,7 +96,7 @@ class SearchRepositoryImpl @Inject constructor(
     }
 
     // 비디오 검색 결과를 가져오는 Flow 생성
-    private fun getVideoSearchFlow(query: String, fetchAll: Boolean = false) = flow {
+    private fun getVideoSearchFlow(keyword: String, fetchAll: Boolean = false) = flow {
         if (fetchAll) {
             val videoList = mutableListOf<SearchResult>()
             var page = 1
@@ -104,7 +104,7 @@ class SearchRepositoryImpl @Inject constructor(
 
             while (page < VIDEO_API_PAGE_MAX && !isEnd) {
                 val response = searchRemoteDataSource.getVideoSearchResult(
-                    query = query,
+                    keyword = keyword,
                     page = page,
                     size = Constants.VIDEO_API_SIZE_MAX,
                     sort = Constants.RECENCY
@@ -116,7 +116,7 @@ class SearchRepositoryImpl @Inject constructor(
             emit(videoList)
         } else {
             val response = searchRemoteDataSource.getVideoSearchResult(
-                query = query,
+                keyword = keyword,
                 page = 1,
                 size = Constants.VIDEO_API_SIZE_MAX,
                 sort = Constants.RECENCY
@@ -129,14 +129,14 @@ class SearchRepositoryImpl @Inject constructor(
     private suspend fun processSearchResults(
         imageData: List<SearchResult>,
         videoData: List<SearchResult>,
-        query: String,
+        keyword: String,
         shouldCache: Boolean = false
     ): PagingEntity {
         val searchResults = (imageData + videoData).sortedByDescending { it.dateTime }
         searchResults.forEach { it.bookMark = bookmarkLocalDataSource.isBookmarked(it.url) }
 
         if (shouldCache) {
-            searchCache[query] = SearchResultCache(searchResults, System.currentTimeMillis())
+            searchCache[keyword] = SearchResultCache(searchResults, System.currentTimeMillis())
             limitCacheSize(searchCache)
         }
 
@@ -155,8 +155,8 @@ class SearchRepositoryImpl @Inject constructor(
         ).flow
 
     // 캐시 확인 및 유효한 결과 반환
-    private fun checkCache(query: String, returnEmptyOnCacheHit: Boolean = false): PagingEntity? {
-        searchCache[query]?.let { cache ->
+    private fun checkCache(keyword: String, returnEmptyOnCacheHit: Boolean = false): PagingEntity? {
+        searchCache[keyword]?.let { cache ->
             if (!cache.isExpired(CACHE_EXPIRATION_TIME)) {
                 val searchResults = if (returnEmptyOnCacheHit) emptyList() else cache.searchResults
                 return PagingEntity(searchResults = searchResults)
