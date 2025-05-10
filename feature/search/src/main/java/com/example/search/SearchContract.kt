@@ -1,5 +1,6 @@
 package com.example.search
 
+import androidx.compose.runtime.Stable
 import androidx.paging.PagingData
 import com.example.core_ui.base.UiEffect
 import com.example.core_ui.base.UiEvent
@@ -13,6 +14,7 @@ class SearchContract {
         data class OnClickBookmark(val searchResultModel: SearchResultModel) : Event()
     }
 
+    @Stable
     sealed class State : UiState {
         data object Idle : State()
         data object Loading : State()

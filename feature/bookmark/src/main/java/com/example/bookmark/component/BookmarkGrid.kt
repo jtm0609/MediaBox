@@ -8,10 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.bookmark.model.BookmarkModel
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun BookmarkGrid(
-    bookmarks: List<BookmarkModel>
+    bookmarks: PersistentList<BookmarkModel>
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
@@ -31,7 +33,7 @@ fun BookmarkGrid(
 @Preview(showBackground = true)
 @Composable
 fun BookmarkGridPreview() {
-    val sampleBookmarks = listOf(
+    val sampleBookmarks = persistentListOf(
         BookmarkModel("https://search4.kakaocdn.net/argon/138x78_80_pr/E1H7Out9GDz"),
         BookmarkModel("https://search1.kakaocdn.net/argon/138x78_80_pr/GrZsTm9zhou"),
         BookmarkModel("https://search3.kakaocdn.net/argon/138x78_80_pr/AjJLoc9Cv77"),
