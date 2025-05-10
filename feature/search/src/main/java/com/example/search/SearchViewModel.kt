@@ -100,6 +100,7 @@ class SearchViewModel @Inject constructor(
                     }
             }.onFailure { e ->
                 setEffect { SearchContract.Effect.ShowError(e) }
+                setEffect { SearchContract.Effect.HideKeyBoard }
             }
         }
     }

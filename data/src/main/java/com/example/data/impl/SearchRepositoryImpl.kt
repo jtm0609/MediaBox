@@ -14,10 +14,9 @@ import com.example.data.model.SearchResultCache
 import com.example.data.paging.SearchResultPagingSource
 import com.example.domain.model.SearchResult
 import com.example.domain.repository.SearchRepository
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class SearchRepositoryImpl @Inject constructor(
@@ -39,12 +38,11 @@ class SearchRepositoryImpl @Inject constructor(
             return createPager(it)
         }
 
-        val pagingResponse = combine(
-            getImageSearchFlow(keyword),
-            getVideoSearchFlow(keyword)
-        ) { imageResponse, videoResponse ->
-            processSearchResults(imageResponse, videoResponse, keyword)
-        }.first()
+        val pagingResponse = coroutineScope {
+            val imageDeferred = async { getImageSearchResult(keyword) }
+            val videoDeferred = async { getVideoSearchResult(keyword) }
+            processSearchResult(imageDeferred.await(), videoDeferred.await(), keyword)
+        }
 
         return createPager(pagingResponse)
     }
@@ -55,18 +53,17 @@ class SearchRepositoryImpl @Inject constructor(
             return createPager(it)
         }
 
-        val pagingResponse = combine(
-            getImageSearchFlow(keyword, fetchAll = true),
-            getVideoSearchFlow(keyword, fetchAll = true)
-        ) { imageList, videoList ->
-            processSearchResults(imageList, videoList, keyword, shouldCache = true)
-        }.first()
+        val pagingResponse = coroutineScope {
+            val imageDeferred = async { getImageSearchResult(keyword, fetchAll = true) }
+            val videoDeferred = async { getVideoSearchResult(keyword, fetchAll = true) }
+            processSearchResult(imageDeferred.await(), videoDeferred.await(), keyword)
+        }
 
         return createPager(pagingResponse)
     }
 
-    // 이미지 검색 결과를 가져오는 Flow 생성
-    private fun getImageSearchFlow(keyword: String, fetchAll: Boolean = false) = flow {
+    // 이미지 검색 결과를 가져오는 함수
+    private suspend fun getImageSearchResult(keyword: String, fetchAll: Boolean = false): List<SearchResult> {
         if (fetchAll) {
             val imageList = mutableListOf<SearchResult>()
             var page = 1
@@ -83,7 +80,7 @@ class SearchRepositoryImpl @Inject constructor(
                 isEnd = response.isEnd
                 page++
             }
-            emit(imageList)
+            return imageList
         } else {
             val response = searchRemoteDataSource.getImageSearchResult(
                 keyword = keyword,
@@ -91,12 +88,12 @@ class SearchRepositoryImpl @Inject constructor(
                 size = Constants.IMAGE_API_SIZE_MAX,
                 sort = Constants.RECENCY
             )
-            emit(response.toDomain())
+            return response.toDomain()
         }
     }
 
-    // 비디오 검색 결과를 가져오는 Flow 생성
-    private fun getVideoSearchFlow(keyword: String, fetchAll: Boolean = false) = flow {
+    // 비디오 검색 결과를 가져오는 함수
+    private suspend fun getVideoSearchResult(keyword: String, fetchAll: Boolean = false): List<SearchResult> {
         if (fetchAll) {
             val videoList = mutableListOf<SearchResult>()
             var page = 1
@@ -113,7 +110,7 @@ class SearchRepositoryImpl @Inject constructor(
                 isEnd = response.isEnd
                 page++
             }
-            emit(videoList)
+            return videoList
         } else {
             val response = searchRemoteDataSource.getVideoSearchResult(
                 keyword = keyword,
@@ -121,12 +118,12 @@ class SearchRepositoryImpl @Inject constructor(
                 size = Constants.VIDEO_API_SIZE_MAX,
                 sort = Constants.RECENCY
             )
-            emit(response.toDomain())
+            return response.toDomain()
         }
     }
 
     // 이미지와 비디오 검색 결과 처리 및 북마크 상태 설정
-    private suspend fun processSearchResults(
+    private suspend fun processSearchResult(
         imageData: List<SearchResult>,
         videoData: List<SearchResult>,
         keyword: String,
