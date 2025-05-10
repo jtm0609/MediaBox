@@ -1,6 +1,8 @@
 package com.example.search
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.map
@@ -86,17 +88,12 @@ class SearchViewModel @Inject constructor(
             runCatching {
                 setState { SearchContract.State.Loading }
                 searchResultsUseCase(keyword)
-                    .collect { resultFlow ->
-                        launch {
-                            val cachedFlow = resultFlow.cachedIn(viewModelScope)
-
-                            cachedFlow.collectLatest { pagingData ->
-                                val mappedResults = pagingData.map { it.toSearchResultModel() }
-                                setEffect { SearchContract.Effect.HideKeyBoard }
-                                setState { SearchContract.State.Success(mappedResults) }
-                                _searchResultFlow.emit(mappedResults)
-                            }
-                        }
+                    .cachedIn(viewModelScope)
+                    .collect { pagingData ->
+                        val mappedResults = pagingData.map { it.toSearchResultModel() }
+                        setEffect { SearchContract.Effect.HideKeyBoard }
+                        setState { SearchContract.State.Success(mappedResults) }
+                        _searchResultFlow.emit(mappedResults)
                     }
             }.onFailure { e ->
                 setEffect { SearchContract.Effect.ShowError(e) }
