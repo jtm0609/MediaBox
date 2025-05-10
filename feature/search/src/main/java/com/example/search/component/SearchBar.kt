@@ -26,7 +26,7 @@ fun SearchBar(
 ) {
     var keywordState by rememberSaveable { mutableStateOf("") }
 
-    LaunchedEffect(null) {
+    LaunchedEffect(Unit) {
         snapshotFlow { keywordState }
             .debounce(500)
             .distinctUntilChanged()
