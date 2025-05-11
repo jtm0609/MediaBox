@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.search.R
-import com.example.search.SearchContract
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -25,13 +24,17 @@ fun SearchBar(
     onSearchKeyword: (String) -> Unit
 ) {
     var keywordState by rememberSaveable { mutableStateOf("") }
+    var previousKeywordState by rememberSaveable { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         snapshotFlow { keywordState }
             .debounce(500)
             .distinctUntilChanged()
-            .collect {
-                onSearchKeyword(it)
+            .collect { keyword ->
+                if (keyword != previousKeywordState) {
+                    previousKeywordState = keyword
+                    onSearchKeyword(keyword)
+                }
             }
     }
 
