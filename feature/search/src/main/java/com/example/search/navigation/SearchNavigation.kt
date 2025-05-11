@@ -1,6 +1,5 @@
 package com.example.search.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -13,14 +12,12 @@ fun NavController.navigateSearch(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.searchNavGraph(
-    padding: PaddingValues,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     onHideKeyboard: () -> Unit
 ) {
 
     composable<NavRoute.Search> {
         SearchScreen(
-            padding = padding,
             onShowErrorSnackBar = onShowErrorSnackBar,
             onHideKeyboard = onHideKeyboard
         )

@@ -15,7 +15,6 @@ import com.example.search.navigation.searchNavGraph
 @Composable
 fun MainNaviHost(
     modifier: Modifier = Modifier,
-    padding: PaddingValues,
     mainNavigator: MainNavigator,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     onHideKeyboard: () -> Unit
@@ -30,12 +29,10 @@ fun MainNaviHost(
             startDestination = mainNavigator.startDestination,
         ) {
             searchNavGraph(
-                padding = padding,
                 onShowErrorSnackBar = onShowErrorSnackBar,
                 onHideKeyboard = onHideKeyboard
             )
             bookmarkNavGraph(
-                padding = padding,
                 onShowErrorSnackBar = onShowErrorSnackBar
             )
         }

@@ -1,9 +1,7 @@
 package com.example.bookmark
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,7 +16,6 @@ import com.example.core_ui.component.Progress
 
 @Composable
 fun BookmarkScreen(
-    padding: PaddingValues,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit,
     bookmarkViewModel: BookmarkViewModel = hiltViewModel()
 ) {
@@ -36,20 +33,17 @@ fun BookmarkScreen(
     }
 
     BookmarkScreenContent(
-        state = state,
-        padding = padding
+        state = state
     )
 }
 
 @Composable
 private fun BookmarkScreenContent(
-    state: BookmarkContract.State,
-    padding: PaddingValues
+    state: BookmarkContract.State
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(padding)
     ) {
         when (state) {
             is BookmarkContract.State.Idle -> EmptyBookmarksGuide()
@@ -65,7 +59,6 @@ fun BookmarkScreenPreview(
     @PreviewParameter(BookmarkPreviewProvider::class) state: BookmarkContract.State
 ) {
     BookmarkScreenContent(
-        state = state,
-        padding = PaddingValues()
+        state = state
     )
 }

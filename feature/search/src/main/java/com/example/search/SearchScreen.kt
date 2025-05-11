@@ -2,7 +2,6 @@ package com.example.search
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -24,7 +23,6 @@ import com.example.search.model.SearchResultModel
 
 @Composable
 fun SearchScreen(
-    padding: PaddingValues,
     onShowErrorSnackBar: (throwable: Throwable) -> Unit,
     onHideKeyboard: () -> Unit,
     viewModel: SearchViewModel = hiltViewModel()
@@ -50,7 +48,6 @@ fun SearchScreen(
     SearchScreenContent(
         state = state,
         searchPagingItems = searchPagingItems,
-        padding = padding,
         onSearchKeyword = {
             viewModel.setEvent(SearchContract.Event.OnSearchKeyword(it))
         },
@@ -64,14 +61,12 @@ fun SearchScreen(
 private fun SearchScreenContent(
     state: SearchContract.State,
     searchPagingItems: LazyPagingItems<SearchResultModel>,
-    padding: PaddingValues,
     onSearchKeyword: (String) -> Unit = {},
     onBookmarkClick: (SearchResultModel) -> Unit = {}
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(padding)
     ) {
         Column(
             modifier = Modifier

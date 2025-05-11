@@ -1,6 +1,5 @@
 package com.example.bookmark.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -13,13 +12,11 @@ fun NavController.navigateBookmark(navOptions: NavOptions) {
 }
 
 fun NavGraphBuilder.bookmarkNavGraph(
-    padding: PaddingValues,
     onShowErrorSnackBar: (throwable: Throwable?) -> Unit
 ) {
 
     composable<NavRoute.BookMark> {
         BookmarkScreen(
-            padding = padding,
             onShowErrorSnackBar = onShowErrorSnackBar
         )
     }

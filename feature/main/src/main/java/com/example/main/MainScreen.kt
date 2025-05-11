@@ -59,7 +59,7 @@ private fun MainScreenContent(
     Scaffold(
         content = { paddingValue ->
             MainNaviHost(
-                padding = paddingValue,
+                modifier = Modifier.padding(paddingValue),
                 mainNavigator = mainNavigator,
                 onShowErrorSnackBar = onShowErrorSnackBar,
                 onHideKeyboard = onHideKeyboard
