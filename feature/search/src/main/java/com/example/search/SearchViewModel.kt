@@ -16,6 +16,7 @@ import com.example.search.model.toSearchResultModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.CoroutineExceptionHandler
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,6 +29,11 @@ class SearchViewModel @Inject constructor(
     private val _searchResultFlow =
         MutableStateFlow<PagingData<SearchResultModel>>(PagingData.empty())
     val searchResultFlow: StateFlow<PagingData<SearchResultModel>> = _searchResultFlow.asStateFlow()
+
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        setEffect { SearchContract.Effect.ShowError(throwable) }
+        setEffect { SearchContract.Effect.HideKeyBoard }
+    }
 
     override fun createInitialState(): SearchContract.State = SearchContract.State.Idle
 
@@ -47,58 +53,45 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun handleBookmarkClick(item: SearchResultModel) {
-        viewModelScope.launch {
-            runCatching {
-                val newBookmarkState = !item.bookMark
-                if (item.bookMark) {
-                    removeBookmarkUseCase(Bookmark(item.url))
-                } else {
-                    saveBookmarkUseCase(Bookmark(item.url))
-                }
-                updateBookmarkState(item, newBookmarkState)
-            }.onFailure { e ->
-                setEffect { SearchContract.Effect.ShowError(e) }
+        viewModelScope.launch(exceptionHandler) {
+            val newBookmarkState = !item.bookMark
+            if (item.bookMark) {
+                removeBookmarkUseCase(Bookmark(item.url))
+            } else {
+                saveBookmarkUseCase(Bookmark(item.url))
             }
+            updateBookmarkState(item, newBookmarkState)
         }
     }
 
     private fun updateBookmarkState(item: SearchResultModel, newBookmarkState: Boolean) {
-        viewModelScope.launch {
-            runCatching {
-                val currentState = uiState.value
-                if (currentState is SearchContract.State.Success) {
-                    val updatedPagingData = currentState.searchResultPagingList.map { searchItem ->
-                        if (searchItem.url == item.url) {
-                            searchItem.copy(bookMark = newBookmarkState)
-                        } else {
-                            searchItem
-                        }
+        viewModelScope.launch(exceptionHandler) {
+            val currentState = uiState.value
+            if (currentState is SearchContract.State.Success) {
+                val updatedPagingData = currentState.searchResultPagingList.map { searchItem ->
+                    if (searchItem.url == item.url) {
+                        searchItem.copy(bookMark = newBookmarkState)
+                    } else {
+                        searchItem
                     }
-                    setState { SearchContract.State.Success(updatedPagingData) }
-                    _searchResultFlow.emit(updatedPagingData)
                 }
-            }.onFailure { e ->
-                setEffect { SearchContract.Effect.ShowError(e) }
+                setState { SearchContract.State.Success(updatedPagingData) }
+                _searchResultFlow.emit(updatedPagingData)
             }
         }
     }
 
     private fun getSearchResult(keyword: String) {
-        viewModelScope.launch {
-            runCatching {
-                setState { SearchContract.State.Loading }
-                searchResultsUseCase(keyword)
-                    .cachedIn(viewModelScope)
-                    .collect { pagingData ->
-                        val mappedResults = pagingData.map { it.toSearchResultModel() }
-                        setEffect { SearchContract.Effect.HideKeyBoard }
-                        setState { SearchContract.State.Success(mappedResults) }
-                        _searchResultFlow.emit(mappedResults)
-                    }
-            }.onFailure { e ->
-                setEffect { SearchContract.Effect.ShowError(e) }
-                setEffect { SearchContract.Effect.HideKeyBoard }
-            }
+        viewModelScope.launch(exceptionHandler) {
+            setState { SearchContract.State.Loading }
+            searchResultsUseCase(keyword)
+                .cachedIn(viewModelScope)
+                .collect { pagingData ->
+                    val mappedResults = pagingData.map { it.toSearchResultModel() }
+                    setEffect { SearchContract.Effect.HideKeyBoard }
+                    setState { SearchContract.State.Success(mappedResults) }
+                    _searchResultFlow.emit(mappedResults)
+                }
         }
     }
 }
