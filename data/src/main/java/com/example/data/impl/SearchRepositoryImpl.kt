@@ -130,7 +130,9 @@ class SearchRepositoryImpl @Inject constructor(
         shouldCache: Boolean = false
     ): PagingEntity {
         val searchResults = (imageData + videoData).sortedByDescending { it.dateTime }
-        searchResults.forEach { it.bookMark = bookmarkLocalDataSource.isBookmarked(it.url) }
+            .map { result -> 
+                result.copy(bookMark = bookmarkLocalDataSource.isBookmarked(result.url))
+            }
 
         if (shouldCache) {
             searchCache[keyword] = SearchResultCache(searchResults, System.currentTimeMillis())
