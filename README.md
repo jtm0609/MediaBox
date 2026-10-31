@@ -4,12 +4,12 @@ MediaBox는 콘텐츠(이미지, 동영상)를 검색하고 북마크할 수 있
 ## 🛠 기술 스택
 - Kotlin
 - Jetpack Compose
-- MVI, Clean Architecture
-- Coroutines & Flow
+- Clean Architecture, Multi-Module, MVI
+- Coroutines, Flow
 - Hilt
 - Retrofit, OkHttp
 - DataStore
-- Paging 3
+- Paging3
 
 ## 📂 프로젝트 구조
 이 프로젝트는 클린 아키텍처에 따라 다음과 같은 모듈로 구성되어 있습니다:
