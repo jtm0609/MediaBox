@@ -3,9 +3,9 @@ MediaBox는 콘텐츠(이미지, 동영상)를 검색하고 북마크할 수 있
 
 ## 🛠 기술 스택
 - Kotlin
-- MVI, Clean Architecture
 - Jetpack Compose
-- Coroutine & Flow
+- MVI, Clean Architecture
+- Coroutines & Flow
 - Hilt
 - Retrofit, OkHttp
 - DataStore
